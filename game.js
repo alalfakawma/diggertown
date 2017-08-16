@@ -6,7 +6,7 @@ canvas.setAttribute("height", 544);
 document.body.appendChild(canvas);
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
-var onTile, frames = 0, player;
+var onTile, frames = 0, player, tiles = [];
 
 // Init game objects
 var gameWorld = {
@@ -18,6 +18,8 @@ var player_obj = {
 	x: null,
 	y: null,
 	health: 100,
+	gravity: 0.8,
+	jumpVel: 3,
 }
 
 var mouse = {
@@ -48,16 +50,39 @@ function init() {
 	var s_silver = loadSprite("sprites/silver.png");
 	var s_bombs = loadSprite("sprites/bombs.png");
 
+	var nonPsprites = [s_soil, s_gold, s_diamond, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil];
+
+	// Load objects
+	for (var i = 0; i < gameWorld.tileArr.length; i++) {
+		tiles.push([]);
+		var random = randomIntFromInterval(3, 7);
+		for (var p = random; p < gameWorld.tileArr[i].length; p++) {
+			tiles[i].push(new DrawSpriteObj(gameWorld.tileArr[i][p].x, gameWorld.tileArr[i][p].y, nonPsprites[Math.floor(Math.random() * nonPsprites.length)]))
+		}
+	}
+
+	player = new Player(0, 0, 32, 32);
+
 	update();
 }
 
 function draw() {
+	// draw room tiles
 	for (var i = 0; i < gameWorld.tileArr.length; i++) {
 		for (var p = 0; p < gameWorld.tileArr[i].length; p++) {
 			gameWorld.tileArr[i][p].draw();
-			gameWorld.tileArr[i][p].getTile(mouse.x, mouse.y);
 		}	
 	}
+
+	// draw object tiles and instances
+	for (var i = 0; i < tiles.length; i++) {
+		for (var p = 0; p < tiles[i].length; p++) {
+			tiles[i][p].draw();
+		}	
+	}
+
+	player.draw();
+
 }
 
 function update() {
@@ -118,15 +143,37 @@ function Player(x, y, w, h, sprite) {
 	this.y = y;
 	this.w = w;
 	this.h = h;
+	this.jumpVel = player_obj.jumpVel;
+	this.gravity = player_obj.gravity;
 	this.sprite = sprite;
 
 	this.draw = function() {
-		c.drawImage(sprite, this.w, this.h, 32, 32, this.x, this.y, gameWorld.tile, gameWorld.tile);
+		player_obj.x = this.x;
+		player_obj.y = this.y;
+
+		c.fillRect(this.x, this.y, this.w, this.h);
+		//c.drawImage(sprite, this.w, this.h, 32, 32, this.x, this.y, gameWorld.tile, gameWorld.tile);
+
+
+		this.y += this.gravity;
 	}
 }
 
-// Fill tile function
-function fillTile(tileX, tileY, sprite) {
-	c.drawImage(sprite, tileX, tileY);
+// Randomize tile addition
+function DrawSpriteObj(x, y, sprite, spriteW, spriteH) {
+	this.x = x;
+	this.y = y;
+	this.w = spriteW;
+	this.h = spriteH;
+	this.sprite = sprite;
+
+	this.draw = function() {
+		c.drawImage(sprite, this.x, this.y);
+	}
 }
 
+// Random min max - Thanks stackoverflow.com
+function randomIntFromInterval(min,max)
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
