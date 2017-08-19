@@ -29,11 +29,99 @@
 			position: absolute;
 			display: none;
 			padding: 5px;
+			z-index: 999;
+		}
+
+		.statusBar {
+			width: 960px;
+			position: absolute;
+			bottom: 80px;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.healthBar {
+			position: absolute;
+			top: 50%;
+			left: 20px;
+			transform: translateY(-50%);
+		}
+
+		.itemBar {
+			position: absolute;
+			top: 50%;
+			left: 200px;
+			transform: translateY(-100%);
+		}
+
+		.resourceBar {
+			left: 400px;
+		}
+
+		.resources {
+			display: inline-block;
+			margin-left: 40px;
+			color: white;
+		}
+
+		.resources.gold {
+			width: 16px;
+			height: 16px;
+			background: url(sprites/resourceicons.png) -16px 0;
+		}
+
+		.resources.silver {
+			width: 16px;
+			height: 16px;
+			background: url(sprites/resourceicons.png) -32px 0;
+		}
+
+		.resources.copper {
+			width: 16px;
+			height: 16px;
+			background: url(sprites/resourceicons.png) -48px 0;
+		}
+
+		.resources.diamond {
+			width: 16px;
+			height: 16px;
+			background: url(sprites/resourceicons.png) 0 0;
+		}
+
+		span.bar {
+			width: 100px;
+			height: 20px;
+			display: block;
+			background: red;
+		}
+
+		.resourceTitle {
+			position: relative;
+			top: -16px;
+		}
+
+		.amount {
+			position: absolute;
 		}
 	</style>
 </head>
 <body>
-	<script type="text/javascript" src="game.js"></script>
 	<div class="showInfo"></div>
+	<div class="statusBar">
+		<div class="healthBar">
+			Health: <span class="bar"></span>
+		</div>
+		<div class="itemBar">
+			Items: <span class="items"></span>
+		</div>
+		<div class="itemBar resourceBar">
+			Resources:
+			<div class="resources gold"><div class="resourceTitle">Gold</div><div class="amount">0</div></div>
+			<div class="resources silver"><div class="resourceTitle">Silver</div><div class="amount">0</div></div>
+			<div class="resources copper"><div class="resourceTitle">Copper</div><div class="amount">0</div></div>
+			<div class="resources diamond"><div class="resourceTitle">Diamond</div><div class="amount">0</div></div>
+		</div>
+	</div>
+	<script type="text/javascript" src="game.js"></script>
 </body>
 </html>

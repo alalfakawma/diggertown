@@ -21,9 +21,10 @@ var player_obj = {
 	y: null,
 	health: 100,
 	gravity: 0.4,
-	jumpHeight: 2.2,
+	jumpHeight: 1.8,
 	speed: 3,
 	digLength: 10,
+	armor: 0,
 }
 
 var mouse = {
@@ -103,6 +104,7 @@ function init() {
 	var s_diamond = loadSprite("sprites/diamond.png");
 	var s_silver = loadSprite("sprites/silver.png");
 	var s_bombs = loadSprite("sprites/bombs.png");
+	var s_player_standing = loadSprite("sprites/player_standing.png");
 
 	// sprite randomizer
 	var groundSprites = [s_soil, s_gold, s_soil, s_diamond, s_soil, s_silver, s_soil, s_bombs, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil];
@@ -116,7 +118,7 @@ function init() {
 		}
 	}
 
-	player = new Player(canvas.width / 2 - 16, 0, 16, 28);
+	player = new Player(canvas.width / 2 - 16, 0, 20, 26, s_player_standing);
 
 	update();
 }
@@ -135,12 +137,19 @@ function draw() {
 
 	player.draw(tiles);
 
+	// Hide tile info
+	document.querySelector('.showInfo').style.display = "none";
+
 	// draw room tiles
 	for (var i = 0; i < gameWorld.tileArr.length; i++) {
 		for (var p = 0; p < gameWorld.tileArr[i].length; p++) {
 			gameWorld.tileArr[i][p].draw();
 			gameWorld.tileArr[i][p].highlight(mouse.x, mouse.y);
 		}	
+	}
+
+	if (player.health <= 0) {
+		window.location.reload();
 	}
 }
 
@@ -228,14 +237,17 @@ function Player(x, y, w, h, sprite) {
 	this.color = "#000";
 	this.vspd = 0;
 	this.hspd;
+	this.health = player_obj.health;
+	this.gold = 0;
+	this.diamond = 0;
+	this.silver = 0;
 
 	this.draw = function(tiles) {
 		player_obj.x = this.x;
 		player_obj.y = this.y;
 
-		c.fillStyle = this.color;
-		c.fillRect(this.x, this.y, this.w, this.h);
-		//c.drawImage(sprite, this.w, this.h, 32, 32, this.x, this.y, gameWorld.tile, gameWorld.tile);
+		// Control health bar
+		document.getElementsByClassName('bar')[0].style.width = this.health + 'px';
 
 		// Gravity
 		this.vspd += this.gravity;
@@ -314,6 +326,17 @@ function Player(x, y, w, h, sprite) {
 							for (var o = 0; o < tiles.length; o++) {
 								for (var p = 0; p < tiles[o].length; p++) {
 									if (diggable[i] == tiles[o][p]) {
+										// check grid contents
+										if (tiles[o][p].resource == 'Bombs') {
+											this.health -= 10 - player_obj.armor;
+										} else if (tiles[o][p].resource == 'Silver') {
+											this.silver += tiles[o][p].amount;
+										} else if (tiles[o][p].resource == 'Gold') {
+											this.gold += tiles[o][p].amount;
+										} else if (tiles[o][p].resource == 'Diamond') {
+											this.diamond += tiles[o][p].amount;
+										}
+										// remove block/tile/grid from array
 										tiles[o].splice(p, 1);
 									}
 								}
@@ -323,6 +346,14 @@ function Player(x, y, w, h, sprite) {
 				}	
 			}
 		dig_click = 0;
+
+		// Update resources
+		document.querySelector('.resources.gold .amount').innerHTML = this.gold;
+		document.querySelector('.resources.silver .amount').innerHTML = this.silver;
+		document.querySelector('.resources.diamond .amount').innerHTML = this.diamond;
+
+		// Draw the sprite
+		c.drawImage(sprite, 2, 0, 27, 32, this.x, this.y, this.w, this.h);
 	}
 }
 
@@ -333,7 +364,24 @@ function DrawSpriteObj(x, y, sprite, spriteW, spriteH) {
 	this.w = spriteW;
 	this.h = spriteH;
 	this.sprite = sprite;
-	this.resource = '';
+	this.resource;
+	this.amount;
+
+	// update resource acc to sprite
+	if (this.sprite.src.includes('gold')) {
+		this.resource = 'Gold';
+		this.amount = Math.ceil(Math.random() * 4);
+	} else if (this.sprite.src.includes('silver')) {
+		this.resource = 'Silver';
+		this.amount = Math.ceil(Math.random() * 8);
+	} else if (this.sprite.src.includes('diamond')) {
+		this.resource = 'Diamond';
+		this.amount = Math.ceil(Math.random() * 2);
+	} else if (this.sprite.src.includes('bombs')) {
+		this.resource = 'Bombs';
+	} else {
+		this.resource = '';
+	}
 
 	this.draw = function() {
 		c.drawImage(sprite, this.x, this.y);
@@ -345,18 +393,6 @@ function DrawSpriteObj(x, y, sprite, spriteW, spriteH) {
 	}
 
 	this.showInfo = function() {
-		if (this.sprite.src.includes('gold')) {
-			this.resource = 'Gold';
-		} else if (this.sprite.src.includes('silver')) {
-			this.resource = 'Silver';
-		} else if (this.sprite.src.includes('diamond')) {
-			this.resource = 'Diamond';
-		} else if (this.sprite.src.includes('bombs')) {
-			this.resource = 'Bombs';
-		} else {
-			this.resource = '';
-		}
-
 		if (this.resource.length) {
 			document.getElementsByClassName('showInfo')[0].style.display = "block";
 			document.getElementsByClassName('showInfo')[0].innerHTML = this.resource;
