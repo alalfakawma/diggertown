@@ -6,7 +6,7 @@ canvas.setAttribute("height", 544);
 document.body.appendChild(canvas);
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
-var onTile, frames = 0, player, tiles = [];
+var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0;
 
 // Init game objects
 var gameWorld = {
@@ -18,21 +18,64 @@ var player_obj = {
 	x: null,
 	y: null,
 	health: 100,
-	gravity: 0.8,
-	jumpVel: 3,
+	gravity: 0.4,
+	jumpHeight: 2.2,
+	speed: 3,
 }
 
 var mouse = {
-	x: null,
-	y: null,
+	x: -1,
+	y: -1,
 };
+
+var domMouse = {
+	x: 0,
+	y: 0,
+}
 
 // Update mouse position on canvas
 document.addEventListener('mousemove', function(e) {
-	mouse = getMousePos(canvas, e);;
+	mouse = getMousePos(canvas, e);
+	domMouse.x = e.clientX;
+	domMouse.y = e.clientY;
 });
 
-// Push tiles to array for manipulation
+// Listen to keyboard
+document.addEventListener('keydown', function(e) {
+	switch(e.keyCode) {
+		case 37: // Left
+			move = -1;
+		break;
+		case 39: // Right
+			move = 1;
+		break;
+		case 71: // G for grids
+			if (gridShow == false) {
+				gridShow = true;
+			} else {
+				gridShow = false;
+			}
+		break;
+		case 32: // Space for jump
+			if (canJump == 1) {
+				jump_key = 1;	
+			}
+		break;
+	}
+});
+
+document.addEventListener('keyup', function(e) {
+	switch(e.keyCode) {
+		case 37: // Left
+			move = 0;
+		break;
+		case 39: // Right
+			move = 0;
+		break;
+	}
+});
+
+// Push tiles to array for manipulation / also this equates to the worlds size
 for (var i = 0; i < (960 / gameWorld.tile); i++) {
 	gameWorld.tileArr.push([]);
 	for (var p = 0; p < (540 / gameWorld.tile); p++) {
@@ -41,7 +84,6 @@ for (var i = 0; i < (960 / gameWorld.tile); i++) {
 }
 
 // ------------------- GAME FUNCTIONS ---------------------
-
 function init() {	
 	// Load sprites
 	var s_soil = loadSprite("sprites/soil.png");
@@ -50,29 +92,27 @@ function init() {
 	var s_silver = loadSprite("sprites/silver.png");
 	var s_bombs = loadSprite("sprites/bombs.png");
 
-	var nonPsprites = [s_soil, s_gold, s_diamond, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil];
+	// sprite randomizer
+	var groundSprites = [s_soil, s_gold, s_soil, s_diamond, s_soil, s_silver, s_soil, s_bombs, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil];
 
 	// Load objects
 	for (var i = 0; i < gameWorld.tileArr.length; i++) {
 		tiles.push([]);
 		var random = randomIntFromInterval(3, 7);
 		for (var p = random; p < gameWorld.tileArr[i].length; p++) {
-			tiles[i].push(new DrawSpriteObj(gameWorld.tileArr[i][p].x, gameWorld.tileArr[i][p].y, nonPsprites[Math.floor(Math.random() * nonPsprites.length)]))
+			tiles[i].push(new DrawSpriteObj(gameWorld.tileArr[i][p].x, gameWorld.tileArr[i][p].y, groundSprites[Math.floor(Math.random() * groundSprites.length)], 32, 32))
 		}
 	}
 
-	player = new Player(0, 0, 32, 32);
+	player = new Player(canvas.width / 2 - 16, 0, 16, 32);
 
 	update();
 }
 
 function draw() {
-	// draw room tiles
-	for (var i = 0; i < gameWorld.tileArr.length; i++) {
-		for (var p = 0; p < gameWorld.tileArr[i].length; p++) {
-			gameWorld.tileArr[i][p].draw();
-		}	
-	}
+	// canvas bg
+	c.fillStyle = "#fff";
+	c.fillRect(0, 0, canvas.width, canvas.height);
 
 	// draw object tiles and instances
 	for (var i = 0; i < tiles.length; i++) {
@@ -81,7 +121,15 @@ function draw() {
 		}	
 	}
 
-	player.draw();
+	player.draw(tiles);
+
+	// draw room tiles
+	for (var i = 0; i < gameWorld.tileArr.length; i++) {
+		for (var p = 0; p < gameWorld.tileArr[i].length; p++) {
+			gameWorld.tileArr[i][p].draw();
+			gameWorld.tileArr[i][p].highlight(mouse.x, mouse.y);
+		}	
+	}
 
 }
 
@@ -97,7 +145,7 @@ function update() {
 // Start game
 init();
 
-// ------------------- OUTSIDE GAME FUNCTIONS -------------------------
+// ------------------- OUTSIDE GAME FUNCTIONS AND GAME OBJECTS -------------------------
 
 // Mouse pos within canvas
 function getMousePos(canvas, e) {
@@ -125,14 +173,33 @@ function CreateTile(x, y, w, h, color) {
 	this.color = color;
 
 	this.draw = function() {
-		c.strokeStyle = this.color;
-		c.strokeRect(this.x, this.y, this.w, this.h);	
+		if (gridShow == true) {
+			c.strokeStyle = this.color;
+			c.strokeRect(this.x, this.y, this.w, this.h);	
+		}	
 	}
 
 	// Get specific tile
 	this.getTile = function(x, y) {
-		if (x > this.x && x < (this.x + this.w) && y > this.y && y < (this.y + this.h)) {
+		if (x > (this.x + 1) && x < (this.x + this.w) && y > (this.y + 1) && y < (this.y + this.h)) {
 			onTile = this;
+		}
+	}
+
+	this.highlight = function(x, y) {
+		if ((x + 1) > this.x && x < (this.x + this.w) && y > (this.y + 1) && y < (this.y + this.h)) {
+			c.strokeStyle = "black";
+			c.strokeRect(this.x, this.y, this.w, this.h);
+			c.strokeRect(this.x, this.y, this.w, this.h);
+
+			// SHOW TILE INFO
+			for (var i = 0; i < tiles.length; i++) {
+				for (var p = 0; p < tiles[i].length; p++) {
+					if (tiles[i][p].x == this.x && tiles[i][p].y == this.y) {
+						tiles[i][p].showInfo();
+					}
+				}
+			}
 		}
 	}
 }
@@ -143,32 +210,115 @@ function Player(x, y, w, h, sprite) {
 	this.y = y;
 	this.w = w;
 	this.h = h;
-	this.jumpVel = player_obj.jumpVel;
+	this.jumpHeight = player_obj.jumpHeight;
 	this.gravity = player_obj.gravity;
+	this.air = true;
 	this.sprite = sprite;
+	this.color = "#000";
+	this.vspd = 0;
+	this.hspd;
 
-	this.draw = function() {
+	this.draw = function(tiles) {
 		player_obj.x = this.x;
 		player_obj.y = this.y;
 
+		c.fillStyle = this.color;
 		c.fillRect(this.x, this.y, this.w, this.h);
 		//c.drawImage(sprite, this.w, this.h, 32, 32, this.x, this.y, gameWorld.tile, gameWorld.tile);
 
+		// Gravity
+		this.vspd += this.gravity;
 
-		this.y += this.gravity;
+		// Jump
+		if (jump_key == 1) {
+			this.vspd -= this.jumpHeight;
+			setTimeout(function() {
+				jump_key = 0;
+				canJump = 0;
+			}, 50);
+		}
+
+		// Vertical collision
+		for (var i = 0; i < tiles.length; i++) {
+			for (var p = 0; p < tiles[i].length; p++) {
+				if (this.x < (tiles[i][p].x + tiles[i][p].w) && (this.x + this.w) > tiles[i][p].x && this.y < (tiles[i][p].y + tiles[i][p].h) && (this.y + this.h + this.vspd) > tiles[i][p].y) {
+					if (this.h + this.y < tiles[i][p].y) {
+						this.y += (tiles[i][p].y - (this.h + this.y));
+					}
+					this.vspd = 0;
+					canJump = 1;
+				}
+			}			
+		}
+
+		// Gravity effect
+		this.y += this.vspd;
+
+		// Move player
+		this.hspd = player_obj.speed * move;
+		if (move != 0) {
+			// Horizontal collision
+			for (var i = 0; i < tiles.length; i++) {
+				for (var p = 0; p < tiles[i].length; p++) {
+					if ((this.x) < (tiles[i][p].x + tiles[i][p].w) && (this.x + this.hspd + this.w) > tiles[i][p].x && this.y < (tiles[i][p].y + tiles[i][p].h) && (this.y + this.h) > tiles[i][p].y) {
+						// right side
+						if (this.x + this.w < tiles[i][p].x) {
+							this.x += (tiles[i][p].x - (this.w + this.x));
+						}
+						this.hspd = 0;
+					} else if ((this.x + this.hspd) < (tiles[i][p].x + tiles[i][p].w) && (this.x + this.w) > tiles[i][p].x && this.y < (tiles[i][p].y + tiles[i][p].h) && (this.y + this.h) > tiles[i][p].y) {
+						// left side
+						if (this.x > tiles[i][p].x + tiles[i][p].w) {
+							this.x -= (this.x - (tiles[i][p].x + tiles[i][p].w));
+						}
+						this.hspd = 0;
+					}
+				}			
+			}
+			this.x += this.hspd;
+		}
 	}
 }
 
-// Randomize tile addition
+// Draw sprite object on screen / could be sprite Tiles, etc.
 function DrawSpriteObj(x, y, sprite, spriteW, spriteH) {
 	this.x = x;
 	this.y = y;
 	this.w = spriteW;
 	this.h = spriteH;
 	this.sprite = sprite;
+	this.resource = '';
 
 	this.draw = function() {
 		c.drawImage(sprite, this.x, this.y);
+	}
+
+	this.hit = function() {
+		c.fillStyle = "blue";
+		c.fillRect(this.x, this.y, this.w, this.h);
+	}
+
+	this.showInfo = function() {
+		if (this.sprite.src.includes('gold')) {
+			this.resource = 'Gold';
+		} else if (this.sprite.src.includes('silver')) {
+			this.resource = 'Silver';
+		} else if (this.sprite.src.includes('diamond')) {
+			this.resource = 'Diamond';
+		} else if (this.sprite.src.includes('bombs')) {
+			this.resource = 'Bombs';
+		} else {
+			this.resource = '';
+		}
+
+		if (this.resource.length) {
+			document.getElementsByClassName('showInfo')[0].style.display = "block";
+			document.getElementsByClassName('showInfo')[0].innerHTML = this.resource;
+			document.getElementsByClassName('showInfo')[0].style.left = domMouse.x + 10 + 'px';
+			document.getElementsByClassName('showInfo')[0].style.top = domMouse.y + 10 + 'px';
+		} else {
+			document.getElementsByClassName('showInfo')[0].style.display = "none";
+		}
 	}
 }
 
