@@ -6,12 +6,14 @@ canvas.setAttribute("height", 544);
 document.body.appendChild(canvas);
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
-var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0;
+var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0;
 
 // Init game objects
 var gameWorld = {
 	tile: 32,
 	tileArr: [],
+	gameWidth: 960,
+	gameHeight: 544,
 }
 
 var player_obj = {
@@ -21,6 +23,7 @@ var player_obj = {
 	gravity: 0.4,
 	jumpHeight: 2.2,
 	speed: 3,
+	digLength: 10,
 }
 
 var mouse = {
@@ -43,10 +46,10 @@ document.addEventListener('mousemove', function(e) {
 // Listen to keyboard
 document.addEventListener('keydown', function(e) {
 	switch(e.keyCode) {
-		case 37: // Left
+		case 65: // Left
 			move = -1;
 		break;
-		case 39: // Right
+		case 68: // Right
 			move = 1;
 		break;
 		case 71: // G for grids
@@ -64,21 +67,30 @@ document.addEventListener('keydown', function(e) {
 	}
 });
 
+document.addEventListener('mousedown', function(e) {
+	if (e.buttons == 1) {
+		// left click
+		if (canDig == 1) {
+			dig_click = 1;
+		}
+	}
+});
+
 document.addEventListener('keyup', function(e) {
 	switch(e.keyCode) {
-		case 37: // Left
+		case 65: // Left
 			move = 0;
 		break;
-		case 39: // Right
+		case 68: // Right
 			move = 0;
 		break;
 	}
 });
 
 // Push tiles to array for manipulation / also this equates to the worlds size
-for (var i = 0; i < (960 / gameWorld.tile); i++) {
+for (var i = 0; i < (gameWorld.gameWidth / gameWorld.tile); i++) {
 	gameWorld.tileArr.push([]);
-	for (var p = 0; p < (540 / gameWorld.tile); p++) {
+	for (var p = 0; p < (gameWorld.gameHeight / gameWorld.tile); p++) {
 		gameWorld.tileArr[i].push(new CreateTile(i * gameWorld.tile, p * gameWorld.tile, gameWorld.tile, gameWorld.tile, '#dfdfdf'));
 	}
 }
@@ -98,13 +110,13 @@ function init() {
 	// Load objects
 	for (var i = 0; i < gameWorld.tileArr.length; i++) {
 		tiles.push([]);
-		var random = randomIntFromInterval(3, 7);
+		var random = randomIntFromInterval(3, 5);
 		for (var p = random; p < gameWorld.tileArr[i].length; p++) {
 			tiles[i].push(new DrawSpriteObj(gameWorld.tileArr[i][p].x, gameWorld.tileArr[i][p].y, groundSprites[Math.floor(Math.random() * groundSprites.length)], 32, 32))
 		}
 	}
 
-	player = new Player(canvas.width / 2 - 16, 0, 16, 32);
+	player = new Player(canvas.width / 2 - 16, 0, 16, 28);
 
 	update();
 }
@@ -130,7 +142,6 @@ function draw() {
 			gameWorld.tileArr[i][p].highlight(mouse.x, mouse.y);
 		}	
 	}
-
 }
 
 function update() {
@@ -232,6 +243,7 @@ function Player(x, y, w, h, sprite) {
 		// Jump
 		if (jump_key == 1) {
 			this.vspd -= this.jumpHeight;
+			canDig = 0;
 			setTimeout(function() {
 				jump_key = 0;
 				canJump = 0;
@@ -247,6 +259,12 @@ function Player(x, y, w, h, sprite) {
 					}
 					this.vspd = 0;
 					canJump = 1;
+					canDig = 1;
+				} else if (this.x < (tiles[i][p].x + tiles[i][p].w) && (this.x + this.w) > tiles[i][p].x && (this.y + this.vspd) < (tiles[i][p].y + tiles[i][p].h) && (this.y + this.h) > tiles[i][p].y) {
+					if (this.y < tiles[i][p].y + tiles[i][p].h) {
+						this.y -= (this.y - (tiles[i][p].y + tiles[i][p].h));
+					}
+					this.vspd = 0;
 				}
 			}			
 		}
@@ -275,8 +293,36 @@ function Player(x, y, w, h, sprite) {
 					}
 				}			
 			}
-			this.x += this.hspd;
+			this.x += this.hspd;	
 		}
+
+		// Dig ground
+		var diggable = [];
+
+		for (var i = 0; i < tiles.length; i++) {
+			for (var p = 0; p < tiles[i].length; p++) {
+				if ((this.x - player_obj.digLength) < (tiles[i][p].x + tiles[i][p].w) && (this.x + this.w + player_obj.digLength) > tiles[i][p].x && (this.y - player_obj.digLength) < (tiles[i][p].y + tiles[i][p].h) && (this.y + player_obj.digLength + this.h) > tiles[i][p].y) {
+					diggable.push(tiles[i][p]);
+				}
+			}		
+		}
+			// Dig the diggable land
+			if (diggable.length > 0) {
+				for (var i = 0; i < diggable.length; i++) {
+					if (dig_click == 1) {
+						if (mouse.x > (diggable[i].x) && mouse.x < (diggable[i].x + diggable[i].w) && mouse.y > (diggable[i].y) && mouse.y < (diggable[i].y + diggable[i].h)) {
+							for (var o = 0; o < tiles.length; o++) {
+								for (var p = 0; p < tiles[o].length; p++) {
+									if (diggable[i] == tiles[o][p]) {
+										tiles[o].splice(p, 1);
+									}
+								}
+							}
+						}
+					}
+				}	
+			}
+		dig_click = 0;
 	}
 }
 
@@ -293,7 +339,7 @@ function DrawSpriteObj(x, y, sprite, spriteW, spriteH) {
 		c.drawImage(sprite, this.x, this.y);
 	}
 
-	this.hit = function() {
+	this.hit = function() { // DEBUG
 		c.fillStyle = "blue";
 		c.fillRect(this.x, this.y, this.w, this.h);
 	}
