@@ -20,8 +20,8 @@ var player_obj = {
 	x: null,
 	y: null,
 	health: 100,
-	gravity: 0.4,
-	jumpHeight: 1.8,
+	gravity: 0.6,
+	jumpHeight: 2.4,
 	speed: 3,
 	digLength: 10,
 	armor: 0,
@@ -107,14 +107,14 @@ function init() {
 	var s_player_standing = loadSprite("sprites/player_standing.png");
 
 	// sprite randomizer
-	var groundSprites = [s_soil, s_gold, s_soil, s_diamond, s_soil, s_silver, s_soil, s_bombs, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil, s_soil];
+	var groundSpriteArr = [s_soil, s_gold, s_diamond, s_silver, s_bombs];
 
 	// Load objects
 	for (var i = 0; i < gameWorld.tileArr.length; i++) {
 		tiles.push([]);
 		var random = randomIntFromInterval(3, 5);
 		for (var p = random; p < gameWorld.tileArr[i].length; p++) {
-			tiles[i].push(new DrawSpriteObj(gameWorld.tileArr[i][p].x, gameWorld.tileArr[i][p].y, groundSprites[Math.floor(Math.random() * groundSprites.length)], 32, 32))
+			tiles[i].push(new DrawSpriteObj(gameWorld.tileArr[i][p].x, gameWorld.tileArr[i][p].y, groundSpriteArr, 32, 32))
 		}
 	}
 
@@ -358,14 +358,28 @@ function Player(x, y, w, h, sprite) {
 }
 
 // Draw sprite object on screen / could be sprite Tiles, etc.
-function DrawSpriteObj(x, y, sprite, spriteW, spriteH) {
+function DrawSpriteObj(x, y, spriteArray, spriteW, spriteH) {
 	this.x = x;
 	this.y = y;
 	this.w = spriteW;
 	this.h = spriteH;
-	this.sprite = sprite;
+	this.sprite;
 	this.resource;
 	this.amount;
+	this.randomValue = Math.floor(Math.random() * 150);
+
+	// Generate sprite according to the randomValue and spriteArray
+	if (this.randomValue == 67 || this.randomValue == 87 || this.randomValue == 143) {
+		this.sprite = spriteArray[1]; // gold
+	} else if (this.randomValue == 89 || this.randomValue == 92 || this.randomValue == 127 || this.randomValue == 145) {
+		this.sprite = spriteArray[3]; // silver
+	} else if (this.randomValue == 24 || this.randomValue == 99 || this.randomValue == 12 || this.randomValue == 123 || this.randomValue == 122 || this.randomValue == 111) {
+		this.sprite = spriteArray[4]; // bomb
+	} else if (this.randomValue == 10 || this.randomValue == 20) {
+		this.sprite = spriteArray[2] // diamond
+	} else {
+		this.sprite = spriteArray[0]; // soil
+	}
 
 	// update resource acc to sprite
 	if (this.sprite.src.includes('gold')) {
@@ -384,7 +398,7 @@ function DrawSpriteObj(x, y, sprite, spriteW, spriteH) {
 	}
 
 	this.draw = function() {
-		c.drawImage(sprite, this.x, this.y);
+		c.drawImage(this.sprite, this.x, this.y);
 	}
 
 	this.hit = function() { // DEBUG
