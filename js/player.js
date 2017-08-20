@@ -14,6 +14,7 @@ function Player(x, y, w, h, sprite) {
 	this.gold = 0;
 	this.diamond = 0;
 	this.silver = 0;
+	this.inventory = player_obj.inventory;
 
 	// Update object
 	player_obj.w = this.w;

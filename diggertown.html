@@ -13,6 +13,11 @@
 			transform: translate(-50%, -50%);
 		}
 
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
 		body {
 			background: #34495e;
 			font-family: 'Slackey', Arial, sans-serif;
@@ -32,6 +37,32 @@
 			display: none;
 			padding: 5px;
 			z-index: 999;
+		}
+
+		.foodInfo {
+			border-radius: 5px;
+			border: 1px solid lightblue;
+			background: #000;
+			color: #fff;
+			text-align: center;
+			height: auto;
+			max-height: 200px; 
+			width: auto;
+			max-width: 200px;
+			position: absolute;
+			display: none;
+			padding: 5px;
+			z-index: 999;
+		}
+
+		.foodInfo .foodInfoTitle {
+			text-align: center;
+		}
+
+		.foodInfo .foodInfoInfo {
+			text-align: center;
+			font-size: 10px;
+			color: gray;
 		}
 
 		.statusBar {
@@ -55,6 +86,14 @@
 			top: 50%;
 			left: 200px;
 			transform: translateY(-100%);
+		}
+
+		.itemBar .items {
+			display: block;
+			position: absolute;
+			width: 180px;
+			height: 70px;
+			overflow-y: auto;
 		}
 
 		.resourceBar {
@@ -113,16 +152,82 @@
 			top: 20px;
 			left: -40px;
 		}
+
+		.itemGrid {
+			display: table-cell;
+			width: 30px;
+			height: 30px;
+			background: #8B4513;
+			border: 1px solid #A0522D;
+			display: inline-block;
+			cursor: pointer;
+		}
+
+		#inventory {
+			display: none;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			padding: 5px;
+			padding-bottom: 0;
+			transform: translate(-50%, -50%);
+			width: 288px;
+			height: 100px;
+			background: #000;
+			z-index: 9999;
+			border: 1px solid lightblue;
+		}
+
+		.inventTitle {
+			color: white;
+			text-align: center;
+			padding-bottom: 5px; 
+		}
 	</style>
 </head>
 <body>
 	<div class="showInfo"></div>
+	<div class="foodInfo">
+		<div class="foodInfotitle"></div>
+		<div class="foodInfoInfo"></div>
+	</div>
+	<div id="inventory">
+		<div class="inventTitle">INVENTORY</div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+		<div class="itemGrid"></div>
+	</div>
 	<div class="statusBar">
 		<div class="healthBar">
 			Health: <span class="bar"></span>
 		</div>
 		<div class="itemBar">
-			Items: <span class="items"></span>
+			Items: <span class="items">
+			</span>
 		</div>
 		<div class="itemBar resourceBar">
 			Resources:
@@ -137,6 +242,7 @@
 	<script type="text/javascript" src="js/gameObjects.js"></script>
 	<script type="text/javascript" src="js/spriteTile.js"></script>
 	<script type="text/javascript" src="js/monsters.js"></script>
+	<script type="text/javascript" src="js/food.js"></script>
 	<script type="text/javascript" src="js/tile.js"></script>
 	<script type="text/javascript" src="js/player.js"></script>
 	<script type="text/javascript" src="game.js"></script>

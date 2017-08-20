@@ -11,7 +11,7 @@ var Bug = function(x, y, w, h, speed, sprite, attack, attackSpeed, health) {
 	this.sprite = sprite;
 	this.attack = attack;
 	this.health = health;
-	this.dugout = 1;
+	this.dugout = 0;
 	this.hspd = 0;
 	this.move = 0;
 	this.attackSpeed = attackSpeed;
@@ -57,28 +57,43 @@ var Bug = function(x, y, w, h, speed, sprite, attack, attackSpeed, health) {
 			}
 
 			// Find player / Pathfinding
-			if (this.x - 100 < (player_obj.x + player_obj.w) && this.y - 100 < (player_obj.y + player_obj.h) && this.x + this.w + 100 > player_obj.x && this.y + this.h + 40 > player_obj.y) {
+			if (this.x - 100 < (player_obj.x + player_obj.w) && this.y - 100 < (player_obj.y + player_obj.h) && this.x + this.w + 100 > player_obj.x && this.y + this.h + 100 > player_obj.y) {
 				// player detected around vicinity
-				if (this.x + this.w < player_obj.x + (this.w / 2)) {
+				if (this.x + this.w < player_obj.x + (this.w / 2) && this.y > player_obj.y && this.y + this.h <= player_obj.y + player_obj.h) {
 					this.move = 1;
-				} else if ((this.w / 2) + this.x > player_obj.x + player_obj.w) {
+					console.log('going right');
+				} else if ((this.w / 2) + this.x > player_obj.x + player_obj.w && this.y > player_obj.y && this.y + this.h <= player_obj.y + player_obj.h) {
 					this.move = -1;
+					console.log('going left');
 				} else if (this.y > player_obj.y + player_obj.h) {
 					// Jump if the player is above you or going up
-					if (!(this.x < (player_obj.x + player_obj.w) && (this.x + this.w) > player_obj.x && this.y < (player_obj.y + player_obj.h) && (this.y + this.h) > player_obj.y)) {
-						this.vspd -= 1;	
+					if (this.x + this.w - 200 < player_obj.x) {
+						this.move = 1;	
+					} else if (this.x + this.w + 200 > player_obj.x) {
+						this.move = -1;
+					}
+					console.log('im trying to come up');
+				} else if (this.y + this.h < player_obj.y) {
+					// Player below the bug
+					console.log('im coming down');
+					if (this.x + this.w - 200 < player_obj.x) {
+						this.move = 1;	
+					} else if (this.x + this.w + 200 > player_obj.x) {
+						this.move = -1;
 					}
 				} else {
 					// Bug on player
 					var attackDmg = randomDec(this.attack[0], this.attack[1]);
 					if (this.canAttack == 1) {
 						if (this.x < (player_obj.x + player_obj.w) && (this.x + this.w) > player_obj.x && this.y < (player_obj.y + player_obj.h) && (this.y + this.h) > player_obj.y) {
-							player_obj.health -= attackDmg;							
+							player_obj.health -= parseFloat(attackDmg);		
 							this.canAttack = 0;
 						}
 					}
 					this.move = 0;
 				}
+			} else {
+				this.move = 0;
 			}
 
 			// Vertical collision

@@ -4,9 +4,12 @@ var c = canvas.getContext("2d");
 canvas.setAttribute("width", 960);
 canvas.setAttribute("height", 544);
 document.body.appendChild(canvas);
+
+var canvasPos = canvas.getBoundingClientRect();
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
-var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug;
+var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug, bunchOfFood = [],
+	keyCode, inventory_open = false;
 
 // Update mouse position on canvas
 document.addEventListener('mousemove', function(e) {
@@ -17,6 +20,7 @@ document.addEventListener('mousemove', function(e) {
 
 // Listen to keyboard
 document.addEventListener('keydown', function(e) {
+	keyCode = e.keyCode;
 	switch(e.keyCode) {
 		case 65: // Left
 			move = -1;
@@ -36,6 +40,13 @@ document.addEventListener('keydown', function(e) {
 				jump_key = 1;	
 			}
 		break;
+		case 81: // inventory I
+			if (inventory_open == true) {
+				inventory_open = false;
+			} else {
+				inventory_open = true;
+			}
+		break;
 	}
 });
 
@@ -45,8 +56,16 @@ document.addEventListener('mousedown', function(e) {
 		if (canDig == 1) {
 			dig_click = 1;
 		}
+	} else {
+		e.preventDefault();
 	}
 });
+
+
+// Stop right click
+document.addEventListener('contextmenu', function(evt) { 
+  evt.preventDefault();
+}, false);
 
 document.addEventListener('keyup', function(e) {
 	switch(e.keyCode) {
@@ -70,12 +89,26 @@ for (var i = 0; i < (gameWorld.gameWidth / gameWorld.tile); i++) {
 // ------------------- GAME FUNCTIONS ---------------------
 function init() {	
 	// Load sprites
+	// Sprite tiles
 	var s_soil = loadSprite("sprites/soil.png");
 	var s_gold = loadSprite("sprites/gold.png");
 	var s_diamond = loadSprite("sprites/diamond.png");
 	var s_silver = loadSprite("sprites/silver.png");
 	var s_bombs = loadSprite("sprites/bombs.png");
+
+	// Player sprites
 	var s_player_standing = loadSprite("sprites/player_standing.png");
+
+	// Food sprites
+	var s_oldalcohol = loadSprite("sprites/oldalcohol.png");
+	oldAlcohol.sprite = s_oldalcohol;
+	var s_oldcannedfood = loadSprite("sprites/oldcannedfood.png");
+	oldCannedFood.sprite = s_oldcannedfood;
+	var s_minerstreat = loadSprite("sprites/minerstreat.png");
+	minersTreat.sprite = s_minerstreat;
+
+	// Food array for food generator
+	var foodArray = [oldAlcohol, minersTreat, oldCannedFood];
 
 	// sprite randomizer
 	var groundSpriteArr = [s_soil, s_gold, s_diamond, s_silver, s_bombs];
@@ -92,6 +125,8 @@ function init() {
 	player = new Player(canvas.width / 2 - 16, 0, 20, 26, s_player_standing);
 
 	bug = new Bug(0, 0, 10, 10, bug.speed, 2, bug.attack, bug.attackSpeed);
+
+	bunchOfFood.push(new Food(3, 3, 12, 12, foodArray));
 
 	update();
 }
@@ -111,8 +146,14 @@ function draw() {
 	player.draw(tiles);
 	bug.draw();
 
+	// Draw food
+	for(var i = 0; i < bunchOfFood.length; i++) {
+		bunchOfFood[i].draw();
+	}
+
 	// Hide tile info
 	document.querySelector('.showInfo').style.display = "none";
+	document.querySelector('.foodInfo').style.display = "none";
 
 	// draw room tiles
 	for (var i = 0; i < gameWorld.tileArr.length; i++) {
@@ -120,6 +161,15 @@ function draw() {
 			gameWorld.tileArr[i][p].draw();
 			gameWorld.tileArr[i][p].highlight(mouse.x, mouse.y);
 		}	
+	}
+
+	// Inventory Open close
+	var inventory = document.getElementById('inventory');
+
+	if (inventory_open == true) {
+		inventory.style.display = "table";
+	} else {
+		inventory.style.display = "none";
 	}
 
 	if (player.health <= 0) {

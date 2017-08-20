@@ -34,6 +34,23 @@ function CreateTile(x, y, w, h, color) {
 					}
 				}
 			}
+
+			for (var i = 0; i < bunchOfFood.length; i++) {
+				if (bunchOfFood[i].x > this.x && bunchOfFood[i].y > this.y && bunchOfFood[i].x + bunchOfFood[i].w < this.x + this.w && bunchOfFood[i].y + bunchOfFood[i].h < this.y + this.h) {
+					// Food is there inside this tile
+					// Show the food info
+					document.getElementsByClassName('foodInfo')[0].style.display = "block";
+					document.getElementsByClassName('foodInfotitle')[0].innerHTML = bunchOfFood[i].name;
+					document.getElementsByClassName('foodInfoInfo')[0].innerHTML = bunchOfFood[i].info;
+					document.getElementsByClassName('foodInfo')[0].style.left = domMouse.x + 10 + 'px';
+					document.getElementsByClassName('foodInfo')[0].style.top = domMouse.y + 10 + 'px';
+				}
+			}
 		}
+	}
+
+	this.hit = function() { // DEBUG
+		c.fillStyle = 'red';
+		c.fillRect(this.x, this.y, this.w, this.h);
 	}
 }

@@ -11,6 +11,7 @@ var player_obj = {
 	y: null,
 	w: null,
 	h: null,
+	inventory: [],
 	health: 100,
 	gravity: 0.6,
 	jumpHeight: 2.4,
@@ -36,4 +37,27 @@ var bug = {
 	attack: [0.5, 3],
 	health: 10,
 	attackSpeed: 1000, // in ms
+}
+
+// Food items and behavious
+var oldCannedFood = {
+	sprite: null,
+	name: "Old Canned Food",
+	armor: 0,
+	health: 5,
+	info: '"Good ol\' canned food, must\'ve been there for a long time now."'
+}
+
+var oldAlcohol = {
+	name: "Old Alcohol",
+	armor: 0,
+	health: 0,
+	info: '"Oooh, stumbled upon a gold mine here, perfect to quench your thirst and go on a mining escapade."'
+}
+
+var minersTreat = {
+	name: "Miner's Feast",
+	armor: 1,
+	health: 50,
+	info: '"Must\'ve been dropped by miner\'s a long time ago, but with out of the world preservatives, I must say."'
 }
