@@ -6,7 +6,7 @@ canvas.setAttribute("height", 544);
 document.body.appendChild(canvas);
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
-var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0;
+var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug;
 
 // Update mouse position on canvas
 document.addEventListener('mousemove', function(e) {
@@ -91,6 +91,8 @@ function init() {
 
 	player = new Player(canvas.width / 2 - 16, 0, 20, 26, s_player_standing);
 
+	bug = new Bug(0, 0, 10, 10, bug.speed, 2, bug.attack, bug.attackSpeed);
+
 	update();
 }
 
@@ -107,6 +109,7 @@ function draw() {
 	}
 
 	player.draw(tiles);
+	bug.draw();
 
 	// Hide tile info
 	document.querySelector('.showInfo').style.display = "none";
@@ -159,4 +162,8 @@ function loadSprite(src) {
 function randomIntFromInterval(min,max)
 {
     return Math.floor(Math.random()*(max-min+1)+min);
+}
+
+function randomDec(min, max) {
+	return (Math.random() * (max - min) + min).toFixed(4);
 }

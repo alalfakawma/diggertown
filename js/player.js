@@ -15,6 +15,10 @@ function Player(x, y, w, h, sprite) {
 	this.diamond = 0;
 	this.silver = 0;
 
+	// Update object
+	player_obj.w = this.w;
+	player_obj.h = this.h;
+
 	this.draw = function(tiles) {
 		player_obj.x = this.x;
 		player_obj.y = this.y;

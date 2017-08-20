@@ -9,6 +9,8 @@ var gameWorld = {
 var player_obj = {
 	x: null,
 	y: null,
+	w: null,
+	h: null,
 	health: 100,
 	gravity: 0.6,
 	jumpHeight: 2.4,
@@ -26,4 +28,12 @@ var mouse = {
 var domMouse = {
 	x: 0,
 	y: 0,
+}
+
+// Bug object
+var bug = {
+	speed: 2,
+	attack: [0.5, 3],
+	health: 10,
+	attackSpeed: 1000, // in ms
 }
