@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>DiggerTown</title>
+	<link href="https://fonts.googleapis.com/css?family=Slackey" rel="stylesheet">
 	<style type="text/css">
 		canvas {
 			border: 1px solid;
@@ -14,6 +15,7 @@
 
 		body {
 			background: #34495e;
+			font-family: 'Slackey', Arial, sans-serif;
 		}
 
 		.showInfo {
@@ -33,6 +35,7 @@
 		}
 
 		.statusBar {
+			font-size: 11px;
 			width: 960px;
 			position: absolute;
 			bottom: 80px;
@@ -56,6 +59,7 @@
 
 		.resourceBar {
 			left: 400px;
+			top: 18px;
 		}
 
 		.resources {
@@ -103,6 +107,12 @@
 		.amount {
 			position: absolute;
 		}
+
+		.resourceHolder {
+			position: relative;
+			top: 20px;
+			left: -40px;
+		}
 	</style>
 </head>
 <body>
@@ -116,12 +126,18 @@
 		</div>
 		<div class="itemBar resourceBar">
 			Resources:
-			<div class="resources gold"><div class="resourceTitle">Gold</div><div class="amount">0</div></div>
-			<div class="resources silver"><div class="resourceTitle">Silver</div><div class="amount">0</div></div>
-			<div class="resources copper"><div class="resourceTitle">Copper</div><div class="amount">0</div></div>
-			<div class="resources diamond"><div class="resourceTitle">Diamond</div><div class="amount">0</div></div>
+			<div class="resourceHolder">
+				<div class="resources gold"><div class="resourceTitle">Gold</div><div class="amount">0</div></div>
+				<div class="resources silver"><div class="resourceTitle">Silver</div><div class="amount">0</div></div>
+				<div class="resources copper"><div class="resourceTitle">Copper</div><div class="amount">0</div></div>
+				<div class="resources diamond"><div class="resourceTitle">Diamond</div><div class="amount">0</div></div>
+			</div>
 		</div>
 	</div>
+	<script type="text/javascript" src="js/gameObjects.js"></script>
+	<script type="text/javascript" src="js/spriteTile.js"></script>
+	<script type="text/javascript" src="js/tile.js"></script>
+	<script type="text/javascript" src="js/player.js"></script>
 	<script type="text/javascript" src="game.js"></script>
 </body>
 </html>
