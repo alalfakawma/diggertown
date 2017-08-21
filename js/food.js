@@ -13,9 +13,9 @@ var Food = function(x, y, w, h, sprite) {
 	if (Array.isArray(sprite)) {
 		// Generate food sprite chance
 		for (var i = 0; i < sprite.length; i++) {
-			if (this.random == 2 || this.random == 23) {
+			if (this.random == 2 || this.random == 23 || this.random == 49) {
 				this.obj = sprite[0]; // Old Alcohol
-			} else if (this.random == 44 || this.random == 32) {
+			} else if (this.random == 44) {
 				this.obj = sprite[1]; // Miner's feast
 			} else {
 				this.obj = sprite[2]; // Old canned food
@@ -31,6 +31,7 @@ var Food = function(x, y, w, h, sprite) {
 	this.name = this.obj.name;
 	this.armor = this.obj.armor;
 	this.health = this.obj.health;
+	this.buff = this.obj.buff;
 
 	this.draw = function() {
 		c.drawImage(this.sprite, this.x, this.y, this.w * 1.2, this.h * 1.2);
@@ -73,7 +74,7 @@ var Food = function(x, y, w, h, sprite) {
 			// Collided with player
 			if (keyCode == 69) {
 				// Player pressed E key add to player invo array
-				// Check player invo first
+				// Check player invo first and check if inventory is full or not
 				if (player_obj.inventory.length <= player_obj.maxInven) {
 					player_obj.inventory.push(this);	
 					// Add to player invo display

@@ -40,12 +40,12 @@ var bug = {
 	attackSpeed: 1000, // in ms
 }
 
-// Food items and behavious
+// Food items and behaviours
 var oldCannedFood = {
-	sprite: null,
 	name: "Old Canned Food",
 	armor: 0,
 	health: 5,
+	buff: null,
 	info: '"Good ol\' canned food, must\'ve been there for a long time now."'
 }
 
@@ -53,6 +53,7 @@ var oldAlcohol = {
 	name: "Old Alcohol",
 	armor: 0,
 	health: 0,
+	buff: [1.5, 2, 100], // Speed, armor, digTime * x
 	info: '"Oooh, stumbled upon a gold mine here, perfect to quench your thirst and go on a mining escapade."'
 }
 
@@ -60,5 +61,6 @@ var minersTreat = {
 	name: "Miner's Feast",
 	armor: 1,
 	health: 50,
+	buff: null,
 	info: '"Must\'ve been dropped by miner\'s a long time ago, but with out of the world preservatives, I must say."'
 }

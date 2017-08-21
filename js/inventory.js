@@ -63,7 +63,6 @@ for (var z = 0; z < getInvo.length; z++) {
 		clearInterval(invoInterval);
 	});
 
-
 	// Use inventory item
 	getInvo[z].addEventListener('click', function() {
 		var playerInvo = player_obj.inventory;
@@ -75,14 +74,46 @@ for (var z = 0; z < getInvo.length; z++) {
 					// Match found in player's inventory
 					var armor = playerInvo[i].armor;
 					var health = playerInvo[i].health;
-					var buff = null;
+					var buff = playerInvo[i].buff;
+
 					// Use the item and add to player stats
 					player_obj.health += health;
 					player_obj.armor += armor;
 
 					// Remove item after player has used it
 					removeFromInvo(playerInvo[i]);
-					break;
+
+					if (buff != null) {
+						if (Array.isArray(buff)) {
+							var speed = buff[0];
+							var armor = buff[1];
+							var digTime = buff[2];
+
+							var oldSpeed = player_obj.speed;
+							var oldArmor = player_obj.armor;
+							var olddigTime = player_obj.digTime;
+
+							// Armor buff
+							if (player_obj.armor < armor) {
+								player_obj.armor = armor;
+							} else {
+								player_obj.armor *= armor;
+							}
+
+							// Speed buff
+							player_obj.speed *= speed;
+
+							// digTime buff
+							player_obj.digTime -= digTime;
+
+							// BuffTime // Reset to the old stats
+							setTimeout(function () {
+								player_obj.speed = oldSpeed;
+								player_obj.armor = oldArmor;
+								player_obj.digTime = olddigTime;
+							}, 10000);
+						}
+					}
 				}
 			}
 		}
