@@ -70,8 +70,11 @@ var Food = function(x, y, w, h, sprite) {
 		if (this.x < (player_obj.x + player_obj.w) && this.x + this.w > player_obj.x && this.y < player_obj.y + player_obj.h && this.y + this.h > player_obj.y) {
 			// Collided with player
 			if (keyCode == 69) {
-				// Player pressed E key
+				// Player pressed E key add to player invo array
 				player_obj.inventory.push(this);
+				// Add to player invo display
+				addToInvo('<img src="' + this.sprite.src + '">');
+				// Remove this from tilearray
 				bunchOfFood.splice(bunchOfFood.indexOf(this), 1);
 				keyCode = null;
 			}

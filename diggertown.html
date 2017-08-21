@@ -4,186 +4,7 @@
 	<meta charset="UTF-8">
 	<title>DiggerTown</title>
 	<link href="https://fonts.googleapis.com/css?family=Slackey" rel="stylesheet">
-	<style type="text/css">
-		canvas {
-			border: 1px solid;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-		}
-
-		* {
-			padding: 0;
-			margin: 0;
-		}
-
-		body {
-			background: #34495e;
-			font-family: 'Slackey', Arial, sans-serif;
-		}
-
-		.showInfo {
-			border-radius: 5px;
-			border: 1px solid lightblue;
-			background: #000;
-			color: #fff;
-			text-align: center;
-			height: auto;
-			max-height: 20px; 
-			width: auto;
-			max-width: 100px;
-			position: absolute;
-			display: none;
-			padding: 5px;
-			z-index: 999;
-		}
-
-		.foodInfo {
-			border-radius: 5px;
-			border: 1px solid lightblue;
-			background: #000;
-			color: #fff;
-			text-align: center;
-			height: auto;
-			max-height: 200px; 
-			width: auto;
-			max-width: 200px;
-			position: absolute;
-			display: none;
-			padding: 5px;
-			z-index: 999;
-		}
-
-		.foodInfo .foodInfoTitle {
-			text-align: center;
-		}
-
-		.foodInfo .foodInfoInfo {
-			text-align: center;
-			font-size: 10px;
-			color: gray;
-		}
-
-		.statusBar {
-			font-size: 11px;
-			width: 960px;
-			position: absolute;
-			bottom: 80px;
-			left: 50%;
-			transform: translateX(-50%);
-		}
-
-		.healthBar {
-			position: absolute;
-			top: 50%;
-			left: 20px;
-			transform: translateY(-50%);
-		}
-
-		.itemBar {
-			position: absolute;
-			top: 50%;
-			left: 200px;
-			transform: translateY(-100%);
-		}
-
-		.itemBar .items {
-			display: block;
-			position: absolute;
-			width: 180px;
-			height: 70px;
-			overflow-y: auto;
-		}
-
-		.resourceBar {
-			left: 400px;
-			top: 18px;
-		}
-
-		.resources {
-			display: inline-block;
-			margin-left: 40px;
-			color: white;
-		}
-
-		.resources.gold {
-			width: 16px;
-			height: 16px;
-			background: url(sprites/resourceicons.png) -16px 0;
-		}
-
-		.resources.silver {
-			width: 16px;
-			height: 16px;
-			background: url(sprites/resourceicons.png) -32px 0;
-		}
-
-		.resources.copper {
-			width: 16px;
-			height: 16px;
-			background: url(sprites/resourceicons.png) -48px 0;
-		}
-
-		.resources.diamond {
-			width: 16px;
-			height: 16px;
-			background: url(sprites/resourceicons.png) 0 0;
-		}
-
-		span.bar {
-			width: 100px;
-			height: 20px;
-			display: block;
-			background: red;
-		}
-
-		.resourceTitle {
-			position: relative;
-			top: -16px;
-		}
-
-		.amount {
-			position: absolute;
-		}
-
-		.resourceHolder {
-			position: relative;
-			top: 20px;
-			left: -40px;
-		}
-
-		.itemGrid {
-			display: table-cell;
-			width: 30px;
-			height: 30px;
-			background: #8B4513;
-			border: 1px solid #A0522D;
-			display: inline-block;
-			cursor: pointer;
-		}
-
-		#inventory {
-			display: none;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			padding: 5px;
-			padding-bottom: 0;
-			transform: translate(-50%, -50%);
-			width: 288px;
-			height: 100px;
-			background: #000;
-			z-index: 9999;
-			border: 1px solid lightblue;
-		}
-
-		.inventTitle {
-			color: white;
-			text-align: center;
-			padding-bottom: 5px; 
-		}
-	</style>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 	<div class="showInfo"></div>
@@ -221,6 +42,13 @@
 		<div class="itemGrid"></div>
 		<div class="itemGrid"></div>
 	</div>
+
+	<div id="inventoryInfo">
+		<div class="inTitle"></div>
+		<div class="inClick">[Click to use]</div>
+		<div class="inInfo"></div>
+	</div>
+
 	<div class="statusBar">
 		<div class="healthBar">
 			Health: <span class="bar"></span>
@@ -243,6 +71,7 @@
 	<script type="text/javascript" src="js/spriteTile.js"></script>
 	<script type="text/javascript" src="js/monsters.js"></script>
 	<script type="text/javascript" src="js/food.js"></script>
+	<script type="text/javascript" src="js/inventory.js"></script>
 	<script type="text/javascript" src="js/tile.js"></script>
 	<script type="text/javascript" src="js/player.js"></script>
 	<script type="text/javascript" src="game.js"></script>
