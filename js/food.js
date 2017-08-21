@@ -55,10 +55,12 @@ var Food = function(x, y, w, h, sprite) {
 							var thatH = gameWorld.tileArr[l][k].h;
 
 							if (this.x < (thatX + thatW) && (this.x + this.w) > thatX && this.y < (thatY + thatH) && (this.y + this.h) > thatY) {
+								if (this.fallen == true) {
 								this.x = thatX + ((thatW/2) - this.w/2);
 
 								// Float in space
 								this.y = (thatY + ((thatH/2) - this.h/2)) + Math.sin((frames*1) * Math.PI / 180) * 3;
+								}
 							}
 						}		
 					}
@@ -71,11 +73,17 @@ var Food = function(x, y, w, h, sprite) {
 			// Collided with player
 			if (keyCode == 69) {
 				// Player pressed E key add to player invo array
-				player_obj.inventory.push(this);
-				// Add to player invo display
-				addToInvo('<img src="' + this.sprite.src + '">');
-				// Remove this from tilearray
-				bunchOfFood.splice(bunchOfFood.indexOf(this), 1);
+				// Check player invo first
+				if (player_obj.inventory.length <= player_obj.maxInven) {
+					player_obj.inventory.push(this);	
+					// Add to player invo display
+					addToInvo(this);
+					// Remove this from tilearray
+					bunchOfFood.splice(bunchOfFood.indexOf(this), 1);
+				} else {
+					// Inventory is full
+					console.log('inventory full');
+				}
 				keyCode = null;
 			}
 		}

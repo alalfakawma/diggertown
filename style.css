@@ -14,6 +14,7 @@ canvas {
 body {
 	background: #34495e;
 	font-family: 'Slackey', Arial, sans-serif;
+	overflow: hidden;
 }
 
 .showInfo {
@@ -155,14 +156,13 @@ span.bar {
 	display: inline-block;
 	cursor: pointer;
 	position: relative;
+	background-repeat: no-repeat;
+	background-position: center;
+	transition: all 1s;
 }
 
-.itemGrid img {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	pointer-events: none;
+.itemGrid:hover {
+	background-size: 15px;
 }
 
 /* FRONTEND INVENTORY */

@@ -19,6 +19,7 @@ var player_obj = {
 	digLength: 10,
 	armor: 0,
 	digTime: 200, // milliseconds
+	maxInven: 26, // +1 for frontend, 26 for array
 }
 
 var mouse = {

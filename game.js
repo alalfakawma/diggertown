@@ -126,7 +126,9 @@ function init() {
 
 	bug = new Bug(0, 0, 10, 10, bug.speed, 2, bug.attack, bug.attackSpeed);
 
-	bunchOfFood.push(new Food(3, 3, 12, 12, foodArray));
+	for(var i = 0; i < 30; i++) {
+		bunchOfFood.push(new Food(i * 25, 3, 12, 12, foodArray));
+	}
 
 	update();
 }
