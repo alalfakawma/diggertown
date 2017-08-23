@@ -14,11 +14,25 @@ function Player(x, y, w, h, sprite) {
 	this.gold = 0;
 	this.diamond = 0;
 	this.silver = 0;
+	this.copper = 0;
 	this.inventory = player_obj.inventory;
+	this.itemID = 1;
 
 	// Update object
 	player_obj.w = this.w;
 	player_obj.h = this.h;
+
+	this.equip = function(id) {
+		this.itemID = id;
+		for (var i = 0; i < gameTools.length; i++) {
+			var thisID = gameTools[i].id;
+
+			if (id == thisID) {
+				
+				break;
+			}
+		}
+	}
 
 	this.draw = function(tiles) {
 		player_obj.x = this.x;
@@ -87,62 +101,78 @@ function Player(x, y, w, h, sprite) {
 			this.x += this.hspd;	
 		}
 
-		// Dig ground
-		var diggable = [], removeTile;
+		// Dig ground if equipping digging item
+		if (this.itemID <= 4) {
+			var diggable = [], removeTile;
 
-		for (var i = 0; i < tiles.length; i++) {
-			for (var p = 0; p < tiles[i].length; p++) {
-				if ((this.x - player_obj.digLength) < (tiles[i][p].x + tiles[i][p].w) && (this.x + this.w + player_obj.digLength) > tiles[i][p].x && (this.y - player_obj.digLength) < (tiles[i][p].y + tiles[i][p].h) && (this.y + player_obj.digLength + this.h) > tiles[i][p].y) {
-					diggable.push(tiles[i][p]);
-				}
-			}		
-		}
-			// Dig the diggable land
-			if (diggable.length > 0) {
-				for (var i = 0; i < diggable.length; i++) {
-					if (dig_click == 1) {
-						if (mouse.x > (diggable[i].x) && mouse.x < (diggable[i].x + diggable[i].w) && mouse.y > (diggable[i].y) && mouse.y < (diggable[i].y + diggable[i].h)) {
-							for (var o = 0; o < tiles.length; o++) {
-								for (var p = 0; p < tiles[o].length; p++) {
-									if (diggable[i] == tiles[o][p]) {
-										// check grid contents
-										if (tiles[o][p].resource == 'Bombs') {
-											this.health -= 10 - player_obj.armor;
-											player_obj.health = this.health;
-										} else if (tiles[o][p].resource == 'Silver') {
-											this.silver += tiles[o][p].amount;
-										} else if (tiles[o][p].resource == 'Gold') {
-											this.gold += tiles[o][p].amount;
-										} else if (tiles[o][p].resource == 'Diamond') {
-											this.diamond += tiles[o][p].amount;
+			for (var i = 0; i < tiles.length; i++) {
+				for (var p = 0; p < tiles[i].length; p++) {
+					if ((this.x - player_obj.digLength) < (tiles[i][p].x + tiles[i][p].w) && (this.x + this.w + player_obj.digLength) > tiles[i][p].x && (this.y - player_obj.digLength) < (tiles[i][p].y + tiles[i][p].h) && (this.y + player_obj.digLength + this.h) > tiles[i][p].y) {
+						diggable.push(tiles[i][p]);
+					}
+				}		
+			}
+				// Dig the diggable land
+				if (diggable.length > 0) {
+					for (var i = 0; i < diggable.length; i++) {
+						if (dig_click == 1) {
+							if (mouse.x > (diggable[i].x) && mouse.x < (diggable[i].x + diggable[i].w) && mouse.y > (diggable[i].y) && mouse.y < (diggable[i].y + diggable[i].h)) {
+								for (var o = 0; o < tiles.length; o++) {
+									for (var p = 0; p < tiles[o].length; p++) {
+										if (diggable[i] == tiles[o][p]) {
+											// check grid contents
+											if (tiles[o][p].resource == 'Bombs') {
+												this.health -= 10 - player_obj.armor;
+												player_obj.health = this.health;
+											} else if (tiles[o][p].resource == 'Silver') {
+												this.silver += tiles[o][p].amount;
+											} else if (tiles[o][p].resource == 'Gold') {
+												this.gold += tiles[o][p].amount;
+											} else if (tiles[o][p].resource == 'Diamond') {
+												this.diamond += tiles[o][p].amount;
+											} else if (tiles[o][p].resource == 'Copper') {
+												this.copper += tiles[o][p].amount;
+											}
+											// remove block/tile/grid from array
+											removeTile = tiles[o][p];
 										}
-										// remove block/tile/grid from array
-										removeTile = tiles[o][p];
 									}
 								}
 							}
 						}
-					}
-				}	
-			}
-		dig_click = 0;
+					}	
+				}
+			dig_click = 0;
 
-		// remove tile from array
-		setTimeout(function () {
-			for (var i = 0; i < tiles.length; i++) {
-				for (var p = 0; p < tiles[i].length; p++) {
-					if (tiles[i][p] == removeTile) {
-						tiles[i].splice(p, 1);
-					}
-				}		 
-			}
-		}, player_obj.digTime);
-		
+			// remove tile from array
+			setTimeout(function () {
+				for (var i = 0; i < tiles.length; i++) {
+					for (var p = 0; p < tiles[i].length; p++) {
+						if (tiles[i][p] == removeTile) {
+							tiles[i].splice(p, 1);
+						}
+					}		 
+				}
+			}, player_obj.digTime);
+			
 
-		// Update resources
-		document.querySelector('.resources.gold .amount').innerHTML = this.gold;
-		document.querySelector('.resources.silver .amount').innerHTML = this.silver;
-		document.querySelector('.resources.diamond .amount').innerHTML = this.diamond;
+			// Update resources
+			document.querySelector('.resources.gold .amount').innerHTML = this.gold;
+			document.querySelector('.resources.silver .amount').innerHTML = this.silver;
+			document.querySelector('.resources.diamond .amount').innerHTML = this.diamond;
+			document.querySelector('.resources.copper .amount').innerHTML = this.copper;
+		}
+
+		// Don't let player leave room
+		if (this.x + this.w > canvas.width) {
+			this.x = canvas.width - this.w;
+		} else if (this.x < 0) {
+			this.x = 0;
+		}
+
+		if (this.y > canvas.height) {
+			player_obj.health--;
+		}
 
 		// Draw the sprite
 		c.drawImage(sprite, 2, 0, 27, 32, this.x, this.y, this.w, this.h);

@@ -77,7 +77,17 @@ for (var z = 0; z < getInvo.length; z++) {
 					var buff = playerInvo[i].buff;
 
 					// Use the item and add to player stats
-					player_obj.health += health;
+					if (player_obj.health <= player_obj.maxHealth) {
+						// Check if item health bonus plus players current health does not exceed maximum health
+						if (player_obj.health + health > player_obj.maxHealth) {
+							var remaining = player_obj.maxHealth - player_obj.health;
+							if (remaining <= health) {
+								player_obj.health += remaining;
+							}
+						} else {
+							player_obj.health += health;
+						}
+					}
 					player_obj.armor += armor;
 
 					// Remove item after player has used it
@@ -111,7 +121,7 @@ for (var z = 0; z < getInvo.length; z++) {
 								player_obj.speed = oldSpeed;
 								player_obj.armor = oldArmor;
 								player_obj.digTime = olddigTime;
-							}, 10000);
+							}, 15000);
 						}
 					}
 				}

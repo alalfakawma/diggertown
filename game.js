@@ -88,18 +88,19 @@ for (var i = 0; i < (gameWorld.gameWidth / gameWorld.tile); i++) {
 
 // ------------------- GAME FUNCTIONS ---------------------
 function init() {	
-	// Load sprites
-	// Sprite tiles
+	// Load sprites ------------------------------------
+	// Sprite tiles ------------------------------------
 	var s_soil = loadSprite("sprites/soil.png");
 	var s_gold = loadSprite("sprites/gold.png");
 	var s_diamond = loadSprite("sprites/diamond.png");
+	var s_copper = loadSprite("sprites/copper.png");
 	var s_silver = loadSprite("sprites/silver.png");
 	var s_bombs = loadSprite("sprites/bombs.png");
 
-	// Player sprites
+	// Player sprites ------------------------------------
 	var s_player_standing = loadSprite("sprites/player_standing.png");
 
-	// Food sprites
+	// Food sprites ------------------------------------
 	var s_oldalcohol = loadSprite("sprites/oldalcohol.png");
 	oldAlcohol.sprite = s_oldalcohol;
 	var s_oldcannedfood = loadSprite("sprites/oldcannedfood.png");
@@ -107,13 +108,13 @@ function init() {
 	var s_minerstreat = loadSprite("sprites/minerstreat.png");
 	minersTreat.sprite = s_minerstreat;
 
-	// Food array for food generator
+	// Food array for food generator ------------------------------------
 	var foodArray = [oldAlcohol, minersTreat, oldCannedFood];
 
-	// sprite randomizer
-	var groundSpriteArr = [s_soil, s_gold, s_diamond, s_silver, s_bombs];
+	// sprite randomizer ------------------------------------
+	var groundSpriteArr = [s_soil, s_gold, s_diamond, s_silver, s_bombs, s_copper];
 
-	// Load objects
+	// Load objects ------------------------------------
 	for (var i = 0; i < gameWorld.tileArr.length; i++) {
 		tiles.push([]);
 		var random = randomIntFromInterval(3, 5);
@@ -126,19 +127,19 @@ function init() {
 
 	bug = new Bug(0, 0, 10, 10, bug.speed, 2, bug.attack, bug.attackSpeed);
 
-	for(var i = 0; i < 30; i++) {
-		bunchOfFood.push(new Food(i * 25, 3, 12, 12, foodArray));
+	for(var i = 0; i < 2; i++) {
+		bunchOfFood.push(new Food(i * 32, 3, 12, 12, foodArray));
 	}
 
 	update();
 }
 
 function draw() {
-	// canvas bg
+	// canvas bg ------------------------------------
 	c.fillStyle = "#fff";
 	c.fillRect(0, 0, canvas.width, canvas.height);
 
-	// draw object tiles and instances
+	// draw object tiles and instances ------------------------------------
 	for (var i = 0; i < tiles.length; i++) {
 		for (var p = 0; p < tiles[i].length; p++) {
 			tiles[i][p].draw();
@@ -148,16 +149,16 @@ function draw() {
 	player.draw(tiles);
 	bug.draw();
 
-	// Draw food
+	// Draw food ------------------------------------
 	for(var i = 0; i < bunchOfFood.length; i++) {
 		bunchOfFood[i].draw();
 	}
 
-	// Hide tile info
+	// Hide tile info ------------------------------------
 	document.querySelector('.showInfo').style.display = "none";
 	document.querySelector('.foodInfo').style.display = "none";
 
-	// draw room tiles
+	// draw room tiles ------------------------------------
 	for (var i = 0; i < gameWorld.tileArr.length; i++) {
 		for (var p = 0; p < gameWorld.tileArr[i].length; p++) {
 			gameWorld.tileArr[i][p].draw();
@@ -165,13 +166,14 @@ function draw() {
 		}	
 	}
 
-	// Inventory Open close
+	// Inventory Open close ------------------------------------
 	var inventory = document.getElementById('inventory');
 
 	if (inventory_open == true) {
 		inventory.style.display = "table";
 	} else {
 		inventory.style.display = "none";
+		document.querySelector('#inventoryInfo').style.display = "none";
 	}
 
 	if (player.health <= 0) {
