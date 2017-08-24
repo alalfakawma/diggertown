@@ -12,6 +12,7 @@ var player_obj = {
 	w: null,
 	h: null,
 	inventory: [],
+	attack: 0,
 	health: 100,
 	gravity: 0.6,
 	jumpHeight: 2.4,
@@ -65,3 +66,51 @@ var minersTreat = {
 	buff: null,
 	info: '"Must\'ve been dropped by miner\'s a long time ago, but with out of the world preservatives, I must say."'
 }
+
+// Game items / Game Tools
+var gameItems = [
+	{
+		"id" : 1,
+		"type" : "eitem",
+		"name" : "Copper Pickaxe",
+		"dmg" : [1, 3],
+		"digTime" : 200,
+		"material" : "copper",
+		"craftamt" : 50,
+		"info" : "\"Simple little pickaxe made of copper\"",
+		"sprite" : loadSprite('sprites/item-copper-pickaxe.png'),
+	},
+	{
+		"id" : 2,
+		"type" : "eitem",
+		"name" : "Silver Pickaxe",
+		"dmg" : [4, 6],
+		"digTime" : 150,
+		"material" : "silver",
+		"craftamt" : 200,
+		"info" : "\"This defo looks lot better than the default copper pickaxe\"",
+		"sprite" : loadSprite('sprites/item-silver-pickaxe.png'),
+	},
+	{
+		"id" : 3,
+		"type" : "eitem",
+		"name" : "Gold Pickaxe",
+		"dmg" : [8, 10],
+		"digTime" : 100,
+		"material" : "gold",
+		"craftamt" : 490,
+		"info" : "\"A gold pickaxe, now beat that!\"",
+		"sprite" : loadSprite('sprites/item-gold-pickaxe.png'),
+	},
+	{
+		"id" : 4,
+		"type" : "eitem",
+		"name" : "Diamond Pickaxe",
+		"dmg" : [12, 16],
+		"digTime" : 20,
+		"material" : "diamond",
+		"craftamt" : 750,
+		"info" : "\"Wow! This is some crazy piece of worksmanship, i'm gonna be mining like Flash now!!!\"",
+		"sprite" : loadSprite('sprites/item-diamond-pickaxe.png'),
+	},
+]

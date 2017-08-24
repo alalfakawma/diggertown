@@ -9,7 +9,7 @@ var canvasPos = canvas.getBoundingClientRect();
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
 var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug, bunchOfFood = [],
-	keyCode, inventory_open = false;
+	keyCode, inventory_open = false, itemArray = [];
 
 // Update mouse position on canvas
 document.addEventListener('mousemove', function(e) {
@@ -127,6 +127,10 @@ function init() {
 
 	bug = new Bug(0, 0, 10, 10, bug.speed, 2, bug.attack, bug.attackSpeed);
 
+	for(var i = 1; i < 2; i++) {
+		itemArray.push(new Item(i * 150, 3, 24, 24, gameItems[2]));
+	}
+
 	for(var i = 0; i < 2; i++) {
 		bunchOfFood.push(new Food(i * 32, 3, 12, 12, foodArray));
 	}
@@ -148,6 +152,11 @@ function draw() {
 
 	player.draw(tiles);
 	bug.draw();
+
+	// Draw items ------------------------------
+	for (var i = 0; i < itemArray.length; i++) {
+		itemArray[i].draw()
+	}
 
 	// Draw food ------------------------------------
 	for(var i = 0; i < bunchOfFood.length; i++) {
@@ -192,32 +201,3 @@ function update() {
 
 // Start game
 init();
-
-// ------------------- OUTSIDE GAME FUNCTIONS -------------------------
-
-// Mouse pos within canvas
-function getMousePos(canvas, e) {
-    var rect = canvas.getBoundingClientRect();
-    return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    };
-}
-
-// Load sprite function
-function loadSprite(src) {
-	var spr = new Image();
-	spr.src = src;
-
-	return spr;
-}
-
-// Random min max - Thanks stackoverflow.com
-function randomIntFromInterval(min,max)
-{
-    return Math.floor(Math.random()*(max-min+1)+min);
-}
-
-function randomDec(min, max) {
-	return (Math.random() * (max - min) + min).toFixed(4);
-}

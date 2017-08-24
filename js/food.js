@@ -9,6 +9,7 @@ var Food = function(x, y, w, h, sprite) {
 	this.random = randomIntFromInterval(1, 50);
 	this.fallen = false;
 	this.obj;
+	this.type = 'food';
 
 	if (Array.isArray(sprite)) {
 		// Generate food sprite chance

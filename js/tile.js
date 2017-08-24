@@ -35,6 +35,7 @@ function CreateTile(x, y, w, h, color) {
 				}
 			}
 
+			// Food
 			for (var i = 0; i < bunchOfFood.length; i++) {
 				if (bunchOfFood[i].x > this.x && bunchOfFood[i].y > this.y && bunchOfFood[i].x + bunchOfFood[i].w < this.x + this.w && bunchOfFood[i].y + bunchOfFood[i].h < this.y + this.h) {
 					// Food is there inside this tile
@@ -42,6 +43,19 @@ function CreateTile(x, y, w, h, color) {
 					document.getElementsByClassName('foodInfo')[0].style.display = "block";
 					document.getElementsByClassName('foodInfotitle')[0].innerHTML = bunchOfFood[i].name;
 					document.getElementsByClassName('foodInfoInfo')[0].innerHTML = bunchOfFood[i].info;
+					document.getElementsByClassName('foodInfo')[0].style.left = domMouse.x + 10 + 'px';
+					document.getElementsByClassName('foodInfo')[0].style.top = domMouse.y + 10 + 'px';
+				}
+			}
+
+			// Items
+			for (var i = 0; i < itemArray.length; i++) {
+				if (itemArray[i].x > this.x && itemArray[i].y > this.y && itemArray[i].x + itemArray[i].w < this.x + this.w && itemArray[i].y + itemArray[i].h < this.y + this.h) {
+					// Food is there inside this tile
+					// Show the food info
+					document.getElementsByClassName('foodInfo')[0].style.display = "block";
+					document.getElementsByClassName('foodInfotitle')[0].innerHTML = itemArray[i].name;
+					document.getElementsByClassName('foodInfoInfo')[0].innerHTML = itemArray[i].info;
 					document.getElementsByClassName('foodInfo')[0].style.left = domMouse.x + 10 + 'px';
 					document.getElementsByClassName('foodInfo')[0].style.top = domMouse.y + 10 + 'px';
 				}

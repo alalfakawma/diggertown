@@ -70,58 +70,70 @@ for (var z = 0; z < getInvo.length; z++) {
 			// Get and parse object
 			var getObject = JSON.parse(this.getAttribute('data-obj'));
 			for (var i = 0; i < playerInvo.length; i++) {
-				if (playerInvo[i].x == getObject.x && playerInvo[i].y == getObject.y && playerInvo[i].sprite.src == this.getAttribute('data-sprite')) {
-					// Match found in player's inventory
-					var armor = playerInvo[i].armor;
-					var health = playerInvo[i].health;
-					var buff = playerInvo[i].buff;
+				if (getObject.type == 'food') {
+					// .. if this is of type food
+					if (playerInvo[i].x == getObject.x && playerInvo[i].y == getObject.y && playerInvo[i].sprite.src == this.getAttribute('data-sprite')) {
+						// Match found in player's inventory
+						var armor = playerInvo[i].armor;
+						var health = playerInvo[i].health;
+						var buff = playerInvo[i].buff;
 
-					// Use the item and add to player stats
-					if (player_obj.health <= player_obj.maxHealth) {
-						// Check if item health bonus plus players current health does not exceed maximum health
-						if (player_obj.health + health > player_obj.maxHealth) {
-							var remaining = player_obj.maxHealth - player_obj.health;
-							if (remaining <= health) {
-								player_obj.health += remaining;
+						// Use the item and add to player stats
+						if (player_obj.health <= player_obj.maxHealth) {
+							// Check if item health bonus plus players current health does not exceed maximum health
+							if (player_obj.health + health > player_obj.maxHealth) {
+								var remaining = player_obj.maxHealth - player_obj.health;
+								if (remaining <= health) {
+									player_obj.health += remaining;
+								}
+							} else {
+								player_obj.health += health;
 							}
-						} else {
-							player_obj.health += health;
+						}
+						player_obj.armor += armor;
+
+						// Remove item after player has used it
+						removeFromInvo(playerInvo[i]);
+
+						if (buff != null) {
+							if (Array.isArray(buff)) {
+								var speed = buff[0];
+								var armor = buff[1];
+								var digTime = buff[2];
+
+								var oldSpeed = player_obj.speed;
+								var oldArmor = player_obj.armor;
+								var olddigTime = player_obj.digTime;
+
+								// Armor buff
+								if (player_obj.armor < armor) {
+									player_obj.armor = armor;
+								} else {
+									player_obj.armor *= armor;
+								}
+
+								// Speed buff
+								player_obj.speed *= speed;
+
+								// digTime buff
+								player_obj.digTime -= digTime;
+
+								// BuffTime // Reset to the old stats
+								setTimeout(function () {
+									player_obj.speed = oldSpeed;
+									player_obj.armor = oldArmor;
+									player_obj.digTime = olddigTime;
+								}, 15000);
+							}
 						}
 					}
-					player_obj.armor += armor;
-
-					// Remove item after player has used it
-					removeFromInvo(playerInvo[i]);
-
-					if (buff != null) {
-						if (Array.isArray(buff)) {
-							var speed = buff[0];
-							var armor = buff[1];
-							var digTime = buff[2];
-
-							var oldSpeed = player_obj.speed;
-							var oldArmor = player_obj.armor;
-							var olddigTime = player_obj.digTime;
-
-							// Armor buff
-							if (player_obj.armor < armor) {
-								player_obj.armor = armor;
-							} else {
-								player_obj.armor *= armor;
-							}
-
-							// Speed buff
-							player_obj.speed *= speed;
-
-							// digTime buff
-							player_obj.digTime -= digTime;
-
-							// BuffTime // Reset to the old stats
-							setTimeout(function () {
-								player_obj.speed = oldSpeed;
-								player_obj.armor = oldArmor;
-								player_obj.digTime = olddigTime;
-							}, 15000);
+				} else if (getObject.type == 'eitem') {
+					// .. if this is equippable item
+					player.equip(getObject.id);
+					for (var s = 0; s < playerInvo.length; s++) {
+						if (getObject.id == playerInvo[s].id) {
+							removeFromInvo(playerInvo[s]);
+							break;
 						}
 					}
 				}

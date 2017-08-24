@@ -9,6 +9,7 @@ function Player(x, y, w, h, sprite) {
 	this.air = true;
 	this.sprite = sprite;
 	this.color = "#000";
+	this.attack = player_obj.attack;
 	this.vspd = 0;
 	this.hspd;
 	this.gold = 0;
@@ -16,23 +17,47 @@ function Player(x, y, w, h, sprite) {
 	this.silver = 0;
 	this.copper = 0;
 	this.inventory = player_obj.inventory;
-	this.itemID = 1;
+	this.itemID = 0;
 
 	// Update object
 	player_obj.w = this.w;
 	player_obj.h = this.h;
 
 	this.equip = function(id) {
-		this.itemID = id;
-		for (var i = 0; i < gameTools.length; i++) {
-			var thisID = gameTools[i].id;
+		if (this.itemID != 0) {
+			this.unequip(this.itemID);
+		}
 
-			if (id == thisID) {
-				
+		// set the player's item
+		this.itemID = id;
+		// update the item UI to the respective sprite
+		updateItemUI(id);
+
+		// Update player stats acc to item
+		for (var i = 0; i < gameItems.length; i++) {
+			if (id == gameItems[i].id) {
+				player_obj.digTime = gameItems[i].digTime;
 				break;
 			}
 		}
 	}
+
+	this.unequip = function(id) {
+		// add the item back to the inventory
+		for (var i = 0; i < gameItems.length; i++) {
+			if (id == gameItems[i].id) {
+				player_obj.inventory.push(gameItems[i]);
+				addToInvo(gameItems[i]);
+				break;
+			}
+		}
+
+		updateItemUI(0);
+		this.itemID = 0;
+	}
+
+	// Equip the default, copper pickaxe when player starts
+	this.equip(1);
 
 	this.draw = function(tiles) {
 		player_obj.x = this.x;
@@ -102,7 +127,7 @@ function Player(x, y, w, h, sprite) {
 		}
 
 		// Dig ground if equipping digging item
-		if (this.itemID <= 4) {
+		if (this.itemID <= 4 && this.itemID != 0) {
 			var diggable = [], removeTile;
 
 			for (var i = 0; i < tiles.length; i++) {

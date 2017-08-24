@@ -165,6 +165,10 @@ span.bar {
 	background-size: 15px;
 }
 
+.itemGrid.equipItem:hover {
+	background-size: 34px;
+}
+
 /* FRONTEND INVENTORY */
 
 #inventory {
