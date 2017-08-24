@@ -61,7 +61,7 @@ var Food = function(x, y, w, h, sprite) {
 								this.x = thatX + ((thatW/2) - this.w/2);
 
 								// Float in space
-								this.y = (thatY + ((thatH/2) - this.h/2)) + Math.sin((frames*1) * Math.PI / 180) * 3;
+								this.y = (thatY + ((thatH/2) - this.h/2)) + Math.sin((frames+this.random*1) * Math.PI / 180) * 3;
 								}
 							}
 						}		

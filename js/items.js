@@ -7,6 +7,11 @@ function updateItemUI(id) {
 		document.getElementsByClassName('equipItem')[0].setAttribute('data-obj', '');
 		document.getElementsByClassName('equipItem')[0].style.backgroundImage = "";
 		return;
+	} else if (id == -1) {
+		document.getElementsByClassName('equipItem')[1].setAttribute('data-sprite', '');
+		document.getElementsByClassName('equipItem')[1].setAttribute('data-obj', '');
+		document.getElementsByClassName('equipItem')[1].style.backgroundImage = "";
+		return;
 	}
 
 	for (var i = 0; i < gameItems.length; i++) {
@@ -19,6 +24,10 @@ function updateItemUI(id) {
 				document.getElementsByClassName('equipItem')[0].setAttribute('data-sprite', thisItem.sprite.src);
 				document.getElementsByClassName('equipItem')[0].setAttribute('data-obj', JSON.stringify(thisItem));
 				document.getElementsByClassName('equipItem')[0].style.backgroundImage = "url("+ thisItem.sprite.src + ")";
+			} else {
+				document.getElementsByClassName('equipItem')[1].setAttribute('data-sprite', thisItem.sprite.src);
+				document.getElementsByClassName('equipItem')[1].setAttribute('data-obj', JSON.stringify(thisItem));
+				document.getElementsByClassName('equipItem')[1].style.backgroundImage = "url("+ thisItem.sprite.src + ")";
 			}
 		}
 	}
@@ -39,6 +48,7 @@ function Item(x, y, w, h, object) {
 	this.name = this.obj.name;
 	this.type = this.obj.type;
 	this.id = this.obj.id;
+	this.random = randomIntFromInterval(20, 200)
 
 	this.draw = function() {
 		c.drawImage(this.obj.sprite, this.x, this.y, this.w, this.h);
@@ -67,7 +77,7 @@ function Item(x, y, w, h, object) {
 								this.x = thatX + ((thatW/2) - this.w/2);
 
 								// Float in space
-								this.y = (thatY + ((thatH/2) - this.h/2)) + Math.sin((frames*1) * Math.PI / 180) * 3;
+								this.y = (thatY + ((thatH/2) - this.h/2)) + Math.sin((frames+this.random*1) * Math.PI / 180) * 3;
 								}
 							}
 						}		
@@ -108,9 +118,37 @@ function Item(x, y, w, h, object) {
 // Unequip item with click
 var itemStack = document.getElementsByClassName('equipItem');
 
+var itemInterval;
 for (var i = 0; i < itemStack.length; i++) {
 	itemStack[i].addEventListener('click', function () {
-		var obj = JSON.parse(this.getAttribute('data-obj'));
-		player.unequip(obj.id);
+		if (this.getAttribute('data-obj') != undefined && this.getAttribute('data-obj') != null && this.getAttribute('data-obj') != '') {
+			var obj = JSON.parse(this.getAttribute('data-obj'));
+			player.unequip(obj.id);
+		}
+	});
+
+	itemStack[i].addEventListener('mouseover', function() {
+		for (var p = 0; p < gameItems.length; p++) {
+			var thisImg = (this.style.backgroundImage != '' || this.style.backgroundImage != undefined) ? true : false;
+			if (thisImg == true) {
+				if (this.getAttribute('data-sprite') == gameItems[p].sprite.src) {
+					// Got the item in the frontend inventory
+					var current = gameItems[p];
+					itemInterval = setInterval(function () {
+						document.querySelector('.itemInfo').style.display = "block";
+						document.querySelector('.itemInfo .inTitle').innerHTML = current.name;
+						document.querySelector('.itemInfo .inInfo').innerHTML = current.info;
+						document.querySelector('.itemInfo').style.left = (domMouse.x + 10) + 'px';
+						document.querySelector('.itemInfo').style.top = (domMouse.y - 50) + 'px';
+					}, 1);
+					break;
+				}
+			}
+		}
+	});
+
+	itemStack[i].addEventListener('mouseleave', function () {
+		document.querySelector('.itemInfo').style.display = "none";
+		clearInterval(itemInterval);
 	});
 }

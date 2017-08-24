@@ -7,7 +7,12 @@ function DrawSpriteObj(x, y, spriteArray, spriteW, spriteH) {
 	this.sprite;
 	this.resource;
 	this.amount;
-	this.randomValue = Math.floor(Math.random() * 150);
+	this.randomValue = randomIntFromInterval(1, 150);
+	this.foodCont = false;
+
+	if (this.randomValue == 50 || this.randomValue == 100) {
+		this.foodCont = true;
+	}
 
 	// Generate sprite according to the randomValue and spriteArray
 	if (this.randomValue == 67 || this.randomValue == 87) {

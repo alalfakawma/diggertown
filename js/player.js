@@ -24,20 +24,27 @@ function Player(x, y, w, h, sprite) {
 	player_obj.h = this.h;
 
 	this.equip = function(id) {
-		if (this.itemID != 0) {
+		if (this.itemID != 0 && id < 9) {
 			this.unequip(this.itemID);
 		}
 
-		// set the player's item
-		this.itemID = id;
+		if (id < 9) {
+			// set the player's item
+			this.itemID = id;
+		}
 		// update the item UI to the respective sprite
 		updateItemUI(id);
 
 		// Update player stats acc to item
 		for (var i = 0; i < gameItems.length; i++) {
 			if (id == gameItems[i].id) {
-				player_obj.digTime = gameItems[i].digTime;
-				break;
+				if (id < 9) {
+					player_obj.digTime = gameItems[i].digTime;	
+					break;
+				} else if (id >= 9) {
+					player_obj.armor += gameItems[i].armor;
+					break;
+				}
 			}
 		}
 	}
@@ -48,12 +55,19 @@ function Player(x, y, w, h, sprite) {
 			if (id == gameItems[i].id) {
 				player_obj.inventory.push(gameItems[i]);
 				addToInvo(gameItems[i]);
+				if (id >= 9) {
+					player_obj.armor -= gameItems[i].armor;
+				}
 				break;
 			}
 		}
 
-		updateItemUI(0);
-		this.itemID = 0;
+		if (id < 9) {
+			updateItemUI(0);	
+			this.itemID = 0;
+		} else {
+			updateItemUI(-1);
+		}		
 	}
 
 	// Equip the default, copper pickaxe when player starts
@@ -174,7 +188,20 @@ function Player(x, y, w, h, sprite) {
 				for (var i = 0; i < tiles.length; i++) {
 					for (var p = 0; p < tiles[i].length; p++) {
 						if (tiles[i][p] == removeTile) {
+							var food = tiles[i][p].foodCont;
+							var x = tiles[i][p].x;
+							var y = tiles[i][p].y;
+							var w = tiles[i][p].w;
+							var h = tiles[i][p].h;
+
+							// remove the tile
 							tiles[i].splice(p, 1);
+
+							// check if tile contains food and spit it out after it is gone
+							if (food) {
+								// generate food item and push to food array
+								bunchOfFood.push(new Food(x + (w / 2), y + h - 6, 12, 12, foodArray));
+							}
 						}
 					}		 
 				}

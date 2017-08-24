@@ -158,7 +158,6 @@ span.bar {
 	position: relative;
 	background-repeat: no-repeat;
 	background-position: center;
-	transition: all 1s;
 }
 
 .itemGrid:hover {
@@ -208,11 +207,11 @@ span.bar {
 	z-index: 99999;
 }
 
-#inventoryInfo .inTitle {
+.inTitle {
 	text-align: center;
 }
 
-#inventoryInfo .inInfo {
+.inInfo {
 	text-align: center;
 	font-size: 10px;
 	color: gray;
@@ -224,3 +223,19 @@ span.bar {
 }
 
 /* ----------- */
+
+.itemInfo {
+	border-radius: 5px;
+	border: 1px solid lightblue;
+	background: #000;
+	color: #fff;
+	text-align: center;
+	height: auto;
+	max-height: 200px; 
+	width: auto;
+	max-width: 200px;
+	position: absolute;
+	display: none;
+	padding: 5px;
+	z-index: 99999;
+}

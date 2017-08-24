@@ -9,7 +9,7 @@ var canvasPos = canvas.getBoundingClientRect();
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
 var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug, bunchOfFood = [],
-	keyCode, inventory_open = false, itemArray = [];
+	keyCode, inventory_open = false, itemArray = [], foodArray;
 
 // Update mouse position on canvas
 document.addEventListener('mousemove', function(e) {
@@ -109,7 +109,7 @@ function init() {
 	minersTreat.sprite = s_minerstreat;
 
 	// Food array for food generator ------------------------------------
-	var foodArray = [oldAlcohol, minersTreat, oldCannedFood];
+	foodArray = [oldAlcohol, minersTreat, oldCannedFood];
 
 	// sprite randomizer ------------------------------------
 	var groundSpriteArr = [s_soil, s_gold, s_diamond, s_silver, s_bombs, s_copper];
@@ -127,12 +127,9 @@ function init() {
 
 	bug = new Bug(0, 0, 10, 10, bug.speed, 2, bug.attack, bug.attackSpeed);
 
+	// Push item
 	for(var i = 1; i < 2; i++) {
-		itemArray.push(new Item(i * 150, 3, 24, 24, gameItems[2]));
-	}
-
-	for(var i = 0; i < 2; i++) {
-		bunchOfFood.push(new Food(i * 32, 3, 12, 12, foodArray));
+		itemArray.push(new Item(i * 196, 3, 24, 24, gameItems[5]));
 	}
 
 	update();
