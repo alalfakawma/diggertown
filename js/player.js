@@ -51,8 +51,13 @@ function Player(x, y, w, h, sprite) {
 		for (var i = 0; i < gameItems.length; i++) {
 			if (id == gameItems[i].id) {
 				if (id < 9) {
-					player_obj.digTime = gameItems[i].digTime;	
-					break;
+					if (gameItems[i].digTime != null && gameItems[i].digTime != '' && gameItems[i].digTime != undefined) {
+						player_obj.digTime = gameItems[i].digTime;		
+						break;
+					} else {
+						player_obj.attack = gameItems[i].dmg;
+						this.attack = player_obj.attack;
+					}
 				} else if (id >= 9) {
 					player_obj.armor += gameItems[i].armor;
 					break;
@@ -71,6 +76,8 @@ function Player(x, y, w, h, sprite) {
 				addToInvo(createItem);
 				if (id >= 9) {
 					player_obj.armor -= gameItems[i].armor;
+				} else {
+					player_obj.attack = 0;
 				}
 				break;
 			}
@@ -239,6 +246,22 @@ function Player(x, y, w, h, sprite) {
 			document.querySelector('.resources.silver .amount').innerHTML = this.silver;
 			document.querySelector('.resources.diamond .amount').innerHTML = this.diamond;
 			document.querySelector('.resources.copper .amount').innerHTML = this.copper;
+		}
+
+		// Player attack
+		if (this.itemID > 4 && this.itemID < 9) {
+			for (var i = 0; i < enemyArr.length; i++) {
+				if (collides(this, enemyArr[i])) {
+					if (mouseButton == 1) {
+						// left click
+						var tile = enemyArr[i].collide();
+						if (mouse.x > tile.x && mouse.y > tile.y && mouse.x < tile.x + tile.w && mouse.y < tile.y + tile.h) {
+							// Deal damage with the object that is attacking you
+							enemyArr[i].health -= randomIntFromInterval(this.attack[0], this.attack[1]);
+						}
+					}
+				}
+			}
 		}
 
 		// Don't let player leave room

@@ -26,7 +26,6 @@ var Bug = function(x, y, w, h, speed, sprite, attack, attackSpeed, health) {
 
 	this.draw = function() {
 		if (this.dugout == 1) {
-
 			// Climb states for animated climbing
 			if (this.state == 1) {
 				// right climb
@@ -145,6 +144,22 @@ var Bug = function(x, y, w, h, speed, sprite, attack, attackSpeed, health) {
 
 			this.y += this.vspd;
 		}
+
+		// Dead / Execute when object is dead
+		if (this.health <= 0) {
+			enemyArr.splice(enemyArr.indexOf(this), 1);
+		}
+	}
+
+	this.collide = function() {
+		// hitbox
+		var newX = this.x - 5,
+			newY = this.y,
+			newW = this.w + 10,
+			newH = this.h + 5;
+
+		// return a hitbox based on the current position but with bigger than object size for accuracy
+		return {x: newX, y: newY, w: newW, h: newH};
 	}
 
 }

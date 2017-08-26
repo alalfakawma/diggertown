@@ -9,7 +9,7 @@ var canvasPos = canvas.getBoundingClientRect();
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
 var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug, bunchOfFood = [],
-	keyCode, inventory_open = false, itemArray = [], foodArray, enemyArr = [], uid = 0;
+	keyCode, inventory_open = false, itemArray = [], foodArray, enemyArr = [], uid = 0, mouseButton;
 
 // Update mouse position on canvas
 document.addEventListener('mousemove', function(e) {
@@ -51,6 +51,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 document.addEventListener('mousedown', function(e) {
+	mouseButton = e.buttons;
 	if (e.buttons == 1) {
 		// left click
 		if (canDig == 1) {
@@ -134,7 +135,7 @@ function init() {
 
 	// Push item
 	for(var i = 1; i < 4; i++) {
-		itemArray.push(new Item(i * 196, 3, 24, 24, gameItems[6]));
+		itemArray.push(new Item(i * 196, 3, 24, 24, gameItems[4]));
 	}
 
 	update();
@@ -157,6 +158,9 @@ function draw() {
 	c.fillRect(0, 0, canvas.width, canvas.height);
 
 	player.draw(tiles);
+
+	// reset mouse button
+	mouseButton = 0;
 
 	// Draw enemies --------------------
 	for (var i = 0; i < enemyArr.length; i++) {
