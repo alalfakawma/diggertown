@@ -9,8 +9,19 @@ function DrawSpriteObj(x, y, spriteArray, spriteW, spriteH) {
 	this.amount;
 	this.randomValue = randomIntFromInterval(1, 150);
 	this.foodCont = false;
+	this.enemyCont = false;
+	this.enemyType = "bug";
 
-	if (this.randomValue == 50 || this.randomValue == 100) {
+	if (this.randomValue == 30 || this.randomValue == 50 || this.randomValue == 90) {
+		this.enemyCont = true;
+		if (randomIntFromInterval(20, 40) == 24) {
+			this.enemyType = "giantearthworm";
+		} else if (randomIntFromInterval(20, 40) == 38) {
+			this.enemyType = "diamondpest";
+		}
+	}
+
+	if (this.randomValue == 70 || this.randomValue == 100) {
 		this.foodCont = true;
 	}
 
@@ -50,6 +61,7 @@ function DrawSpriteObj(x, y, spriteArray, spriteW, spriteH) {
 
 	this.draw = function() {
 		c.drawImage(this.sprite, this.x, this.y);
+		this.addObstacle();
 	}
 
 	this.hit = function() { // DEBUG
@@ -65,6 +77,18 @@ function DrawSpriteObj(x, y, spriteArray, spriteW, spriteH) {
 			document.getElementsByClassName('showInfo')[0].style.top = domMouse.y + 10 + 'px';
 		} else {
 			document.getElementsByClassName('showInfo')[0].style.display = "none";
+		}
+	}
+
+	this.addObstacle = function() {
+		var tileArr = gameWorld.tileArr;
+
+		for (var i = 0; i < tileArr.length; i++) {
+			for (var p = 0; p < tileArr[i].length; p++) {
+				if (this.x == tileArr[i][p].x && this.y == tileArr[i][p].y) {
+					tileArr[i][p].obstacle = true;
+				}
+			}	
 		}
 	}
 }

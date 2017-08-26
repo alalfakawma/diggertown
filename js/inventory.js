@@ -21,7 +21,7 @@ function removeFromInvo(item) {
 	for (var i = 0; i < getInvo.length; i++) {
 		if (getInvo[i].getAttribute('data-sprite') != '' && getInvo[i].getAttribute('data-sprite') != undefined && getInvo[i].getAttribute('data-sprite') != null) {
 			var objectParse = JSON.parse(getInvo[i].getAttribute('data-obj'));
-			if (item.x == objectParse.x && item.y == objectParse.y && item.sprite.src == getInvo[i].getAttribute('data-sprite')) {
+			if (item.x == objectParse.x && item.y == objectParse.y && item.sprite.src == getInvo[i].getAttribute('data-sprite') && item.uid == objectParse.uid) {
 				// remove from invo
 				player_obj.inventory.splice(player_obj.inventory.indexOf(item), 1);
 				// remove from frontend invo
@@ -131,11 +131,12 @@ for (var z = 0; z < getInvo.length; z++) {
 					// .. if this is equippable item
 					player.equip(getObject.id);
 					for (var s = 0; s < playerInvo.length; s++) {
-						if (getObject.id == playerInvo[s].id) {
+						if (getObject.uid == playerInvo[s].uid) {
 							removeFromInvo(playerInvo[s]);
 							break;
 						}
 					}
+					break;
 				}
 			}
 		}

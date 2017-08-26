@@ -9,7 +9,7 @@ var canvasPos = canvas.getBoundingClientRect();
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
 var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug, bunchOfFood = [],
-	keyCode, inventory_open = false, itemArray = [], foodArray;
+	keyCode, inventory_open = false, itemArray = [], foodArray, enemyArr = [], uid = 0;
 
 // Update mouse position on canvas
 document.addEventListener('mousemove', function(e) {
@@ -82,7 +82,14 @@ document.addEventListener('keyup', function(e) {
 for (var i = 0; i < (gameWorld.gameWidth / gameWorld.tile); i++) {
 	gameWorld.tileArr.push([]);
 	for (var p = 0; p < (gameWorld.gameHeight / gameWorld.tile); p++) {
-		gameWorld.tileArr[i].push(new CreateTile(i * gameWorld.tile, p * gameWorld.tile, gameWorld.tile, gameWorld.tile, '#dfdfdf'));
+		gameWorld.tileArr[i].push(new CreateTile(i * gameWorld.tile, p * gameWorld.tile, gameWorld.tile, gameWorld.tile, '#dfdfdf', i, p));
+	}
+}
+
+// Add neighbors to tiles
+for (var i = 0; i < gameWorld.tileArr.length; i++) {
+	for (var p = 0; p < gameWorld.tileArr[i].length; p++) {
+		gameWorld.tileArr[i][p].addNeighbors(gameWorld.tileArr);
 	}
 }
 
@@ -123,13 +130,11 @@ function init() {
 		}
 	}
 
-	player = new Player(canvas.width / 2 - 16, 0, 20, 26, s_player_standing);
-
-	bug = new Bug(0, 0, 10, 10, bug.speed, 2, bug.attack, bug.attackSpeed);
+	player = new Player(randomIntFromInterval(50, 160), 0, 20, 26, s_player_standing);
 
 	// Push item
-	for(var i = 1; i < 2; i++) {
-		itemArray.push(new Item(i * 196, 3, 24, 24, gameItems[5]));
+	for(var i = 1; i < 4; i++) {
+		itemArray.push(new Item(i * 196, 3, 24, 24, gameItems[6]));
 	}
 
 	update();
@@ -137,7 +142,7 @@ function init() {
 
 function draw() {
 	// canvas bg ------------------------------------
-	c.fillStyle = "#fff";
+	c.fillStyle = "#111";
 	c.fillRect(0, 0, canvas.width, canvas.height);
 
 	// draw object tiles and instances ------------------------------------
@@ -147,8 +152,16 @@ function draw() {
 		}	
 	}
 
+	// Darken the room but not the player/food/enemies
+	c.fillStyle = "rgba(0, 0, 0, 0.2)";
+	c.fillRect(0, 0, canvas.width, canvas.height);
+
 	player.draw(tiles);
-	bug.draw();
+
+	// Draw enemies --------------------
+	for (var i = 0; i < enemyArr.length; i++) {
+		enemyArr[i].draw();
+	}
 
 	// Draw items ------------------------------
 	for (var i = 0; i < itemArray.length; i++) {

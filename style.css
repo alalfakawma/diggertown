@@ -158,10 +158,11 @@ span.bar {
 	position: relative;
 	background-repeat: no-repeat;
 	background-position: center;
+	background-size: 20px;
 }
 
 .itemGrid:hover {
-	background-size: 15px;
+	background-size: 24px;
 }
 
 .itemGrid.equipItem:hover {
@@ -238,4 +239,8 @@ span.bar {
 	display: none;
 	padding: 5px;
 	z-index: 99999;
+}
+
+.itemBar .itemGrid {
+	background-size: auto;
 }

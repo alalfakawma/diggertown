@@ -1,16 +1,45 @@
 // Create tile obj function
-function CreateTile(x, y, w, h, color) {
+function CreateTile(x, y, w, h, color, col, row) {
 	this.x = x;
 	this.y = y;
 	this.w = w;
 	this.h = h;
 	this.color = color;
+	// A* pathfinding
+	this.f = 0;
+	this.g = 0;
+	this.heu = 0;
+	this.neighbors = [];
+	this.col = col;
+	this.row = row;	
+	this.previous = undefined;
+	this.obstacle = false;
+
+	this.addNeighbors = function(tileArr) {
+		var col = this.col;
+		var row = this.row;
+
+		if (col < tileArr.length - 1) {
+			this.neighbors.push(tileArr[col+1][row]);	
+		}
+		if (col > 0) {
+			this.neighbors.push(tileArr[col-1][row]);	
+		}
+		if (row < tileArr[0].length - 1) {
+			this.neighbors.push(tileArr[col][row+1]);	
+		}
+		if (row > 0) {
+			this.neighbors.push(tileArr[col][row-1]);	
+		}
+	}
 
 	this.draw = function() {
 		if (gridShow == true) {
 			c.strokeStyle = this.color;
 			c.strokeRect(this.x, this.y, this.w, this.h);	
-		}	
+		}
+
+		this.obstacle = false;
 	}
 
 	// Get specific tile
@@ -22,7 +51,7 @@ function CreateTile(x, y, w, h, color) {
 
 	this.highlight = function(x, y) {
 		if ((x + 1) > this.x && x < (this.x + this.w) && y > (this.y + 1) && y < (this.y + this.h)) {
-			c.strokeStyle = "black";
+			c.strokeStyle = "white";
 			c.strokeRect(this.x, this.y, this.w, this.h);
 			c.strokeRect(this.x, this.y, this.w, this.h);
 

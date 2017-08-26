@@ -21,10 +21,12 @@ function updateItemUI(id) {
 			// Update the UI with the respective sprite
 			// Update to the first box if this is not an armor
 			if (id < 9) {
+				// Tools/weapons
 				document.getElementsByClassName('equipItem')[0].setAttribute('data-sprite', thisItem.sprite.src);
 				document.getElementsByClassName('equipItem')[0].setAttribute('data-obj', JSON.stringify(thisItem));
 				document.getElementsByClassName('equipItem')[0].style.backgroundImage = "url("+ thisItem.sprite.src + ")";
 			} else {
+				// Armor
 				document.getElementsByClassName('equipItem')[1].setAttribute('data-sprite', thisItem.sprite.src);
 				document.getElementsByClassName('equipItem')[1].setAttribute('data-obj', JSON.stringify(thisItem));
 				document.getElementsByClassName('equipItem')[1].style.backgroundImage = "url("+ thisItem.sprite.src + ")";
@@ -35,6 +37,7 @@ function updateItemUI(id) {
 
 // Item object constructor
 function Item(x, y, w, h, object) {
+	this.uid = genuid();
 	this.x = x;
 	this.y = y;
 	this.w = w;
@@ -93,7 +96,7 @@ function Item(x, y, w, h, object) {
 				// Player pressed E key add to player invo array
 				// Check player invo first and check if inventory is full or not
 				if (player_obj.inventory.length <= player_obj.maxInven) {
-					player_obj.inventory.push(this);	
+					player_obj.inventory.push(this);
 					// Add to player invo display
 					addToInvo(this);
 					// Remove this from tilearray

@@ -17,6 +17,27 @@ function loadSprite(src) {
 	return spr;
 }
 
+// Generate UID
+function genuid() {
+  uid++;
+  return uid;
+}
+
+// Heuristic for A*
+function heuristic(a, b) {
+  var dist = Math.sqrt( Math.pow((a.x-b.x), 2) + Math.pow((a.y-b.y), 2) );
+  return dist;
+}
+
+// collision checker
+function collides(a, b) {
+  if ((a.x + a.w) > b.x && a.x < (b.x + b.w) && (a.y + a.h) > b.y && a.y < (b.y + b.h)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 // Random min max - Thanks stackoverflow.com
 function randomIntFromInterval(min,max)
 {

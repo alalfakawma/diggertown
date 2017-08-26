@@ -36,10 +36,11 @@ var domMouse = {
 
 // Bug object
 var bug = {
-	speed: 2,
+	speed: [1.5, 2.4],
 	attack: [0.5, 3],
 	health: 10,
 	attackSpeed: 1000, // in ms
+	sprite: loadSprite("sprites/enemy-bug.png"),
 }
 
 // Food items and behaviours

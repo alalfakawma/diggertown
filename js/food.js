@@ -14,9 +14,9 @@ var Food = function(x, y, w, h, sprite) {
 	if (Array.isArray(sprite)) {
 		// Generate food sprite chance
 		for (var i = 0; i < sprite.length; i++) {
-			if (this.random == 2 || this.random == 23 || this.random == 49) {
+			if (this.random == 2 || this.random == 23 || this.random == 49 || this.random == 5) {
 				this.obj = sprite[0]; // Old Alcohol
-			} else if (this.random == 44) {
+			} else if (this.random == 44 || this.random == 22) {
 				this.obj = sprite[1]; // Miner's feast
 			} else {
 				this.obj = sprite[2]; // Old canned food
