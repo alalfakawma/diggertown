@@ -18,6 +18,9 @@ function Player(x, y, w, h, sprite) {
 	this.copper = 0;
 	this.inventory = player_obj.inventory;
 	this.itemID = 0;
+	this.dm = 1;
+	this.frames = 0;
+	this.digging = 0;
 
 	// Update object
 	player_obj.w = this.w;
@@ -26,7 +29,11 @@ function Player(x, y, w, h, sprite) {
 	this.equip = function(id) {
 		if (this.itemID != 0 && id < 9) {
 			// Check if there is an item already equipped and unequip that item
-			this.unequip(this.itemID);
+			var storedItem = this.itemID;
+
+			if (player_obj.inventory.length <= player_obj.maxInven) {
+				this.unequip(this.itemID);
+			}
 		}
 
 		if (id < 9) {
@@ -40,7 +47,9 @@ function Player(x, y, w, h, sprite) {
 				// there is an item that has been equipped before
 				var obj = JSON.parse(getArmorObj);
 				// unequip that item
-				this.unequip(obj.id);
+				if (player_obj.inventory.length <= player_obj.maxInven) {
+					this.unequip(obj.id);
+				}
 			}
 		}
 
@@ -52,7 +61,9 @@ function Player(x, y, w, h, sprite) {
 			if (id == gameItems[i].id) {
 				if (id < 9) {
 					if (gameItems[i].digTime != null && gameItems[i].digTime != '' && gameItems[i].digTime != undefined) {
-						player_obj.digTime = gameItems[i].digTime;		
+						player_obj.digTime = gameItems[i].digTime;
+						player_obj.attack = gameItems[i].dmg;
+						this.attack = player_obj.attack;	
 						break;
 					} else {
 						player_obj.attack = gameItems[i].dmg;
@@ -67,34 +78,68 @@ function Player(x, y, w, h, sprite) {
 	}
 
 	this.unequip = function(id) {
-		// add the item back to the inventory
-		for (var i = 0; i < gameItems.length; i++) {
-			if (id == gameItems[i].id) {
-				// Create an item obj and add it to the inventory
-				var createItem = new Item(this.x, this.y, 24, 24, gameItems[i]);
-				player_obj.inventory.push(createItem);
-				addToInvo(createItem);
-				if (id >= 9) {
-					player_obj.armor -= gameItems[i].armor;
-				} else {
-					player_obj.attack = 0;
+		if (player_obj.inventory.length <= player_obj.maxInven) {
+			// add the item back to the inventory
+			for (var i = 0; i < gameItems.length; i++) {
+				if (id == gameItems[i].id) {
+					// Create an item obj and add it to the inventory
+					var createItem = new Item(this.x, this.y, 24, 24, gameItems[i]);
+					player_obj.inventory.push(createItem);
+					addToInvo(createItem);
+					if (id >= 9) {
+						player_obj.armor -= gameItems[i].armor;
+					} else {
+						player_obj.attack = 0;
+					}
+					break;
 				}
-				break;
 			}
-		}
 
-		if (id < 9) {
-			updateItemUI(0);	
-			this.itemID = 0;
-		} else if (id > 9) {
-			updateItemUI(-1);
-		}		
+			if (id < 9) {
+				updateItemUI(0);	
+				this.itemID = 0;
+			} else if (id > 9) {
+				updateItemUI(-1);
+			}		
+		}
 	}
 
 	// Equip the default, copper pickaxe when player starts
 	this.equip(1);
 
+	// animation timer for digging
+	var digAnimTimer = 0;
+
 	this.draw = function(tiles) {
+
+		if (mouse.x < this.x) {
+			this.dm = -1;
+		} else if (mouse.x > this.x + this.w) {
+			this.dm = 1;
+		}
+
+		// Digging animation speed
+		if (digAnimTimer > player_obj.digTime / 12) {
+			digAnimTimer = 0;
+			this.digging = 0;
+		}
+
+
+		// animation speed
+		if (frames % 3 == 0) {
+			this.frames++;
+		}
+
+		// reset frames after 3
+		if (this.frames > 3) {
+			this.frames = 0;
+		}
+
+		if (move != 0) {
+			// Store old position of move for use with animation
+			this.dm = move;
+		}
+
 		player_obj.x = this.x;
 		player_obj.y = this.y;
 		this.health = player_obj.health;
@@ -158,7 +203,17 @@ function Player(x, y, w, h, sprite) {
 					}
 				}			
 			}
-			this.x += this.hspd;	
+			this.x += this.hspd;
+
+
+			// Handle animation
+			if (move > 0 && this.hspd != 0) {
+				// moving to right
+				c.drawImage(this.sprite[2], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);
+			} else if (move < 0 && this.hspd != 0) {
+				// moving to left
+				c.drawImage(this.sprite[3], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);
+			}
 		}
 
 		// Dig ground if equipping digging item
@@ -180,6 +235,8 @@ function Player(x, y, w, h, sprite) {
 								for (var o = 0; o < tiles.length; o++) {
 									for (var p = 0; p < tiles[o].length; p++) {
 										if (diggable[i] == tiles[o][p]) {
+											// start dig animation
+											this.digging = 1;
 											// check grid contents
 											if (tiles[o][p].resource == 'Bombs') {
 												this.health -= 10 - player_obj.armor;
@@ -203,6 +260,17 @@ function Player(x, y, w, h, sprite) {
 					}	
 				}
 			dig_click = 0;
+
+			// set digging animation
+			if (this.digging == 1 && this.dm > 0) {
+				// dig to right
+				c.drawImage(this.sprite[4], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);
+				digAnimTimer++;
+			} else if (this.digging == 1 && this.dm < 0) {
+				// dig to left
+				c.drawImage(this.sprite[5], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);
+				digAnimTimer++;
+			}
 
 			// remove tile from array
 			setTimeout(function () {
@@ -249,21 +317,37 @@ function Player(x, y, w, h, sprite) {
 		}
 
 		// Player attack
-		if (this.itemID > 4 && this.itemID < 9) {
-			for (var i = 0; i < enemyArr.length; i++) {
-				if (collides(this, enemyArr[i])) {
-					if (mouseButton == 1) {
-						// left click
-						var tile = enemyArr[i].collide();
-						if (mouse.x > tile.x && mouse.y > tile.y && mouse.x < tile.x + tile.w && mouse.y < tile.y + tile.h) {
-							// Deal damage with the object that is attacking you
-							enemyArr[i].health -= randomIntFromInterval(this.attack[0], this.attack[1]);
-						}
+		if (this.itemID < 9) {
+			if (mouseButton == 1) {
+				this.digging = 1;
+				for (var i = 0; i < enemyArr.length; i++) {
+					if (collides(this, enemyArr[i])) {
+						// Deal damage with the object that is attacking you
+						enemyArr[i].health -= randomIntFromInterval(this.attack[0], this.attack[1]);
 					}
 				}
 			}
-		}
 
+			// set attack animation using the digging animation controller
+			if (this.digging == 1 && this.dm > 0) {
+				// attack right
+				if (this.itemID > 4 && this.itemID < 9) {
+					c.drawImage(this.sprite[6], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);	
+				} else if (this.itemID > 0 && this.itemID < 5) {
+					c.drawImage(this.sprite[4], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);
+				}
+				digAnimTimer++;
+			} else if (this.digging == 1 && this.dm < 0) {
+				// attack left
+				if (this.itemID > 4 && this.itemID < 9) {
+					c.drawImage(this.sprite[7], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);	
+				} else if (this.itemID > 0 && this.itemID < 5) {
+					c.drawImage(this.sprite[5], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);	
+				}
+				digAnimTimer++;
+			}
+		}
+		
 		// Don't let player leave room
 		if (this.x + this.w > canvas.width) {
 			this.x = canvas.width - this.w;
@@ -275,8 +359,19 @@ function Player(x, y, w, h, sprite) {
 			player_obj.health--;
 		}
 
-		// Draw the sprite
-		c.drawImage(sprite, 2, 0, 27, 32, this.x, this.y, this.w, this.h);
+		// Stop animation
+		if (this.hspd == 0 && this.digging == 0) {
+			if (this.dm > 0)  {
+			// right
+				c.drawImage(this.sprite[0], 2, 0, 27, 32, this.x, this.y, this.w, this.h);
+			} else if (this.dm < 0) {
+				//left
+				c.drawImage(this.sprite[1], 2, 0, 27, 32, this.x, this.y, this.w, this.h);
+			}
+		}
+
+		// Draw light
+		c.drawImage(this.sprite[this.sprite.length - 1], this.x, this.y, 200, 200);
 	}
 
 	this.whichTile = function() {

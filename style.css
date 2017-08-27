@@ -244,3 +244,39 @@ span.bar {
 .itemBar .itemGrid {
 	background-size: auto;
 }
+
+#crafting {
+	display: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	padding: 5px;
+	padding-bottom: 0;
+	transform: translate(-50%, -50%);
+	width: 288px;
+	height: auto;
+	background: #000;
+	z-index: 9999;
+	border: 1px solid lightblue;
+}
+
+.craftInfo {
+	border-radius: 5px;
+	border: 1px solid lightblue;
+	background: #000;
+	color: #fff;
+	text-align: center;
+	height: auto;
+	max-height: 200px; 
+	width: auto;
+	max-width: 200px;
+	position: absolute;
+	display: none;
+	padding: 5px;
+	z-index: 99999;
+}
+
+.craftAmt {
+	font-size: 9px;
+	color: yellow;
+}

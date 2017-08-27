@@ -9,7 +9,7 @@ var canvasPos = canvas.getBoundingClientRect();
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
 var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug, bunchOfFood = [],
-	keyCode, inventory_open = false, itemArray = [], foodArray, enemyArr = [], uid = 0, mouseButton;
+	keyCode, inventory_open = false, itemArray = [], foodArray, enemyArr = [], uid = 0, mouseButton, craft_open = false;
 
 // Update mouse position on canvas
 document.addEventListener('mousemove', function(e) {
@@ -45,6 +45,13 @@ document.addEventListener('keydown', function(e) {
 				inventory_open = false;
 			} else {
 				inventory_open = true;
+			}
+		break;
+		case 67: // inventory I
+			if (craft_open == true) {
+				craft_open = false;
+			} else {
+				craft_open = true;
 			}
 		break;
 	}
@@ -106,7 +113,16 @@ function init() {
 	var s_bombs = loadSprite("sprites/bombs.png");
 
 	// Player sprites ------------------------------------
+	var s_light_sprite = loadSprite("sprites/light_sprite.png");
 	var s_player_standing = loadSprite("sprites/player_standing.png");
+	var s_player_standing_left = loadSprite("sprites/player_standing_left.png");
+	var s_player_walking = loadSprite("sprites/player_walking-sheet.png");
+	var s_player_walking_left = loadSprite("sprites/player_walking_left-sheet.png");
+	var s_player_digging = loadSprite("sprites/player_digging-sheet.png");
+	var s_player_digging_left = loadSprite("sprites/player_digging_left-sheet.png");
+	var s_player_slash = loadSprite("sprites/player_slash-sheet.png");
+	var s_player_slash_left = loadSprite("sprites/player_slash_left-sheet.png");
+	var s_player = [s_player_standing, s_player_standing_left, s_player_walking, s_player_walking_left, s_player_digging, s_player_digging_left, s_player_slash, s_player_slash_left, s_light_sprite];
 
 	// Food sprites ------------------------------------
 	var s_oldalcohol = loadSprite("sprites/oldalcohol.png");
@@ -131,19 +147,15 @@ function init() {
 		}
 	}
 
-	player = new Player(randomIntFromInterval(50, 160), 0, 20, 26, s_player_standing);
-
-	// Push item
-	for(var i = 1; i < 4; i++) {
-		itemArray.push(new Item(i * 196, 3, 24, 24, gameItems[4]));
-	}
+	// Load player
+	player = new Player(randomIntFromInterval(50, 160), 0, 20, 26, s_player);
 
 	update();
 }
 
 function draw() {
 	// canvas bg ------------------------------------
-	c.fillStyle = "#111";
+	c.fillStyle = "#444";
 	c.fillRect(0, 0, canvas.width, canvas.height);
 
 	// draw object tiles and instances ------------------------------------
@@ -154,7 +166,7 @@ function draw() {
 	}
 
 	// Darken the room but not the player/food/enemies
-	c.fillStyle = "rgba(0, 0, 0, 0.2)";
+	c.fillStyle = "rgba(0, 0, 0, 0.4)";
 	c.fillRect(0, 0, canvas.width, canvas.height);
 
 	player.draw(tiles);
@@ -198,6 +210,17 @@ function draw() {
 		inventory.style.display = "none";
 		document.querySelector('#inventoryInfo').style.display = "none";
 	}
+
+	// Crafting open close -----------------------------
+	if (craft_open == true) {
+		document.querySelector('#crafting').style.display = "block";
+	} else {
+		document.querySelector('#crafting').style.display = "none";
+		document.querySelector('.craftInfo').style.display = "none";
+	}
+
+	// Check items regularly
+	checkItems();
 
 	if (player.health <= 0) {
 		window.location.reload();

@@ -17,6 +17,14 @@ var Bug = function(x, y, w, h, speed, sprite, attack, attackSpeed, health) {
 	this.attackSpeed = attackSpeed;
 	this.canAttack = 0;
 	this.state = 0; // non-climbing state
+	this.itemCont = false; // contains item or not
+
+	// give random value for food
+	var rand = randomIntFromInterval(10, 20);
+
+	if (rand < 15) {
+		this.itemCont = true;
+	}
 
 	setInterval(function() {
 		if (self.canAttack == 0) {
@@ -102,7 +110,7 @@ var Bug = function(x, y, w, h, speed, sprite, attack, attackSpeed, health) {
 										if (this.canAttack == 1) {
 											// attack the player with the random amount of the attack power specified in the object file
 											var randomAttack = randomDec(this.attack[0], this.attack[1]);
-											player_obj.health -= randomAttack;
+											player_obj.health -= ((randomAttack - player_obj.armor) < 0) ? 0 : (randomAttack - player_obj.armor);
 											player.attacked();
 											// reset the canattack for attack interval
 											this.canAttack = 0;
