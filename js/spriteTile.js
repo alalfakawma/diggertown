@@ -10,6 +10,7 @@ function DrawSpriteObj(x, y, spriteArray, spriteW, spriteH) {
 	this.randomValue = randomIntFromInterval(1, 150);
 	this.foodCont = false;
 	this.enemyCont = false;
+	// Default type of enemy
 	this.enemyType = "bug";
 
 	if (this.randomValue == 30 || this.randomValue == 50 || this.randomValue == 90) {
@@ -77,6 +78,13 @@ function DrawSpriteObj(x, y, spriteArray, spriteW, spriteH) {
 			document.getElementsByClassName('showInfo')[0].style.top = domMouse.y + 10 + 'px';
 		} else {
 			document.getElementsByClassName('showInfo')[0].style.display = "none";
+		}
+	}
+
+	// Get specific tile
+	this.getTile = function(x, y) {
+		if (x > (this.x) && x < (this.x + this.w) && y > (this.y) && y < (this.y + this.h)) {
+			return this;
 		}
 	}
 

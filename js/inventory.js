@@ -49,6 +49,9 @@ for (var z = 0; z < getInvo.length; z++) {
 						document.querySelector('#inventoryInfo').style.display = "block";
 						document.querySelector('#inventoryInfo .inTitle').innerHTML = current.name;
 						document.querySelector('#inventoryInfo .inInfo').innerHTML = current.info;
+						if (current.obj.dmg != undefined && current.obj.dmg != null) {
+							document.querySelector('#inventoryInfo .dmg').innerHTML = 'Damage: ' + current.obj.dmg[0] + ' - ' + current.obj.dmg[1];
+						}
 						document.querySelector('#inventoryInfo').style.left = (domMouse.x + 10) + 'px';
 						document.querySelector('#inventoryInfo').style.top = (domMouse.y + 10) + 'px';
 					}, 1);
@@ -95,6 +98,7 @@ for (var z = 0; z < getInvo.length; z++) {
 						// Remove item after player has used it
 						removeFromInvo(playerInvo[i]);
 
+						// Buff code
 						if (buff != null) {
 							if (Array.isArray(buff)) {
 								var speed = buff[0];

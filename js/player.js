@@ -8,7 +8,6 @@ function Player(x, y, w, h, sprite) {
 	this.gravity = player_obj.gravity;
 	this.air = true;
 	this.sprite = sprite;
-	this.color = "#000";
 	this.attack = player_obj.attack;
 	this.vspd = 0;
 	this.hspd;
@@ -39,13 +38,14 @@ function Player(x, y, w, h, sprite) {
 		if (id < 9) {
 			// set the player's item if item is hand held
 			this.itemID = id;
-		} else if (id > 9) {
+		} else if (id > 8) {
 			// first check if any armor has been equipped then unequip it
 			var getArmorObj = document.getElementsByClassName('equipItem')[1].getAttribute('data-obj');
 
 			if (getArmorObj != null && getArmorObj != undefined && getArmorObj != '') {
 				// there is an item that has been equipped before
 				var obj = JSON.parse(getArmorObj);
+
 				// unequip that item
 				if (player_obj.inventory.length <= player_obj.maxInven) {
 					this.unequip(obj.id);
@@ -98,7 +98,7 @@ function Player(x, y, w, h, sprite) {
 			if (id < 9) {
 				updateItemUI(0);	
 				this.itemID = 0;
-			} else if (id > 9) {
+			} else if (id > 8) {
 				updateItemUI(-1);
 			}		
 		}
@@ -111,7 +111,7 @@ function Player(x, y, w, h, sprite) {
 	var digAnimTimer = 0;
 
 	this.draw = function(tiles) {
-
+		// change delta move
 		if (mouse.x < this.x) {
 			this.dm = -1;
 		} else if (mouse.x > this.x + this.w) {
@@ -126,7 +126,7 @@ function Player(x, y, w, h, sprite) {
 
 
 		// animation speed
-		if (frames % 3 == 0) {
+		if (frames % 4 == 0) {
 			this.frames++;
 		}
 
@@ -335,6 +335,8 @@ function Player(x, y, w, h, sprite) {
 					c.drawImage(this.sprite[6], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);	
 				} else if (this.itemID > 0 && this.itemID < 5) {
 					c.drawImage(this.sprite[4], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);
+				} else {
+					c.drawImage(this.sprite[0], 0, 0, 27, 32, this.x, this.y, this.w, this.h);
 				}
 				digAnimTimer++;
 			} else if (this.digging == 1 && this.dm < 0) {
@@ -343,6 +345,8 @@ function Player(x, y, w, h, sprite) {
 					c.drawImage(this.sprite[7], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);	
 				} else if (this.itemID > 0 && this.itemID < 5) {
 					c.drawImage(this.sprite[5], 32 * this.frames, 0, 27, 32, this.x, this.y, this.w, this.h);	
+				} else {
+					c.drawImage(this.sprite[1], 0, 0, 27, 32, this.x, this.y, this.w, this.h);
 				}
 				digAnimTimer++;
 			}

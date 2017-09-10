@@ -68,6 +68,11 @@ for (var z = 0; z < getGrids.length; z++) {
 			document.querySelector('.craftInfo').style.display = "block";
 			document.querySelector('.craftInfo .inTitle').innerHTML = current.name;
 			document.querySelector('.craftInfo .craftAmt').innerHTML = 'Craft with ' + current.craftamt + ' ' + current.material;
+			if (current.dmg != undefined && current.dmg != null) {
+				document.querySelector('.craftInfo .dmg').innerHTML = 'Damage: ' + current.dmg[0] + ' - ' + current.dmg[1];
+			} else {
+				document.querySelector('.craftInfo .dmg').innerHTML = '';
+			}
 			document.querySelector('.craftInfo .inInfo').innerHTML = current.info;
 			document.querySelector('.craftInfo').style.left = (domMouse.x + 10) + 'px';
 			document.querySelector('.craftInfo').style.top = (domMouse.y + 10) + 'px';

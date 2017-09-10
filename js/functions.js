@@ -44,6 +44,22 @@ function randomIntFromInterval(min,max)
     return Math.floor(Math.random()*(max-min+1)+min);
 }
 
+// Random decimal numbers
 function randomDec(min, max) {
 	return (Math.random() * (max - min) + min).toFixed(4);
+}
+
+// Run to goto new randomly generated level
+function nextLevel() {
+  player.x = randomIntFromInterval(20, 180);
+  player.y = 0;
+  tiles = [];
+
+  for (var i = 0; i < gameWorld.tileArr.length; i++) {
+    tiles.push([]);
+    var random = randomIntFromInterval(3, 5);
+    for (var p = random; p < gameWorld.tileArr[i].length; p++) {
+      tiles[i].push(new DrawSpriteObj(gameWorld.tileArr[i][p].x, gameWorld.tileArr[i][p].y, groundSpriteArr, 32, 32))
+    }
+  }
 }

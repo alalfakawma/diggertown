@@ -190,6 +190,7 @@ span.bar {
 	color: white;
 	text-align: center;
 	padding-bottom: 5px; 
+	text-transform: uppercase;
 }
 
 #inventoryInfo {
@@ -216,6 +217,10 @@ span.bar {
 	text-align: center;
 	font-size: 10px;
 	color: gray;
+}
+
+.dmg {
+	font-size: 10px;
 }
 
 #inventoryInfo .inClick {
@@ -279,4 +284,44 @@ span.bar {
 .craftAmt {
 	font-size: 9px;
 	color: yellow;
+}
+
+.title {
+	font-size: 300%;
+	color: #ecf0f1;
+	position: absolute;
+	top: 3%;
+	left: 20%;
+}
+
+.tutorial {
+	font-size: 14px;
+	position: absolute;
+	right: 20%;
+	top: 1%;
+}
+
+.hard {
+	color: #ecf0f1;
+}
+
+.line {
+	color: #e74c3c;
+}
+
+@media only screen and (max-width: 1500px) {
+	.tutorial {
+		font-size: 10px;
+		top: 2%;
+		right: 17%;
+	}
+
+	.title {
+		font-size: 250%;
+		left: 16%;
+	}
+
+	.statusBar {
+		bottom: 70px;
+	}
 }

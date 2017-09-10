@@ -9,7 +9,7 @@ var canvasPos = canvas.getBoundingClientRect();
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
 var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug, bunchOfFood = [],
-	keyCode, inventory_open = false, itemArray = [], foodArray, enemyArr = [], uid = 0, mouseButton, craft_open = false;
+	keyCode, inventory_open = false, itemArray = [], foodArray, enemyArr = [], uid = 0, mouseButton, craft_open = false, groundSpriteArr = [];
 
 // Update mouse position on canvas
 document.addEventListener('mousemove', function(e) {
@@ -46,12 +46,22 @@ document.addEventListener('keydown', function(e) {
 			} else {
 				inventory_open = true;
 			}
+
+			// Close crafting menu if open
+			if (craft_open == true) {
+				craft_open = false;
+			}
 		break;
 		case 67: // inventory I
 			if (craft_open == true) {
 				craft_open = false;
 			} else {
 				craft_open = true;
+			}
+
+			// Close inventory if open
+			if (inventory_open == true) {
+				inventory_open = false;
 			}
 		break;
 	}
@@ -136,7 +146,7 @@ function init() {
 	foodArray = [oldAlcohol, minersTreat, oldCannedFood];
 
 	// sprite randomizer ------------------------------------
-	var groundSpriteArr = [s_soil, s_gold, s_diamond, s_silver, s_bombs, s_copper];
+	groundSpriteArr = [s_soil, s_gold, s_diamond, s_silver, s_bombs, s_copper];
 
 	// Load objects ------------------------------------
 	for (var i = 0; i < gameWorld.tileArr.length; i++) {
@@ -224,6 +234,7 @@ function draw() {
 
 	if (player.health <= 0) {
 		window.location.reload();
+		return;
 	}
 }
 
