@@ -118,7 +118,7 @@ var gameItems = [
 		"id" : 5,
 		"type" : "eitem",
 		"name" : "Copper Sword",
-		"dmg" : [5, 7],
+		"dmg" : [10, 13],
 		"digTime" : null,
 		"material" : "copper",
 		"craftamt" : 200,
@@ -129,7 +129,7 @@ var gameItems = [
 		"id" : 6,
 		"type" : "eitem",
 		"name" : "Silver Sword",
-		"dmg" : [10, 15],
+		"dmg" : [15, 19],
 		"digTime" : null,
 		"material" : "silver",
 		"craftamt" : 400,
@@ -140,7 +140,7 @@ var gameItems = [
 		"id" : 7,
 		"type" : "eitem",
 		"name" : "Gold Sword",
-		"dmg" : [15, 25],
+		"dmg" : [18, 25],
 		"digTime" : null,
 		"material" : "gold",
 		"craftamt" : 650,
@@ -188,4 +188,13 @@ var gameItems = [
 		"info" : "\"Whoa! Is this really diamond? Looks real hard and durable\"",
 		"sprite" : loadSprite('sprites/item-diamond-armor.png'),
 	},
+	{
+		"id" : 12,
+		"type" : "uitem",
+		"name" : "Copper Rope and Hook",
+		"material" : "copper",
+		"craftamt" : 40,	
+		"info" : "This looks strong enough to get me up on top of some blocks of rock..",
+		"sprite" : loadSprite('sprites/item-copper-rope.png')
+	}
 ]

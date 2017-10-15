@@ -20,6 +20,8 @@ function Player(x, y, w, h, sprite) {
 	this.dm = 1;
 	this.frames = 0;
 	this.digging = 0;
+	this.rope = false;
+	this.playerTopTile = [];
 
 	// Update object
 	player_obj.w = this.w;
@@ -110,7 +112,61 @@ function Player(x, y, w, h, sprite) {
 	// animation timer for digging
 	var digAnimTimer = 0;
 
+	// Tile to move for rope action
+	var goRope = false;
+
+	// Store grid color
+	var tempGridHi = gridHi;
+
 	this.draw = function(tiles) {
+
+		// Quick Switch Helper
+		if (keyCode == 49) {
+			// Button 1
+			for (var i = 0; i < this.inventory.length; i++) {
+				if (this.inventory[i].id > 0 && this.inventory[i].id < 5) {
+					for (var s = 0; s < this.inventory.length; s++) {
+						if (this.inventory[i].uid == this.inventory[s].uid) {
+							this.equip(this.inventory[i].id);
+							removeFromInvo(this.inventory[s]);
+							break;
+						}
+					}
+				}
+			}
+		} else if (keyCode == 50) {
+			// Button 2
+			for (var i = 0; i < this.inventory.length; i++) {
+				if (this.inventory[i].id > 4 && this.inventory[i].id < 9) {
+					for (var s = 0; s < this.inventory.length; s++) {
+						if (this.inventory[i].uid == this.inventory[s].uid) {
+							this.equip(this.inventory[i].id);
+							removeFromInvo(this.inventory[s]);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		// Clear player Top tiles array
+		this.playerTopTile = [];
+
+		// Continuously check for tiles on top of the player for the rope function
+		for (var i = 0; i < tiles.length; i++) {
+			for (var p = 0; p < tiles[i].length; p++) {
+				if (this.x < (tiles[i][p].x + tiles[i][p].w) && (this.x + this.w) > tiles[i][p].x && (this.y + (-544)) < (tiles[i][p].y + tiles[i][p].h) && (this.y + this.h) > tiles[i][p].y) {
+					this.playerTopTile.push(tiles[i][p]);
+				}
+			}
+		}
+
+		if (this.rope == true) {
+			gridHi = '#19ff5a';
+		} else {
+			gridHi = tempGridHi;
+		}
+
 		// change delta move
 		if (mouse.x < this.x) {
 			this.dm = -1;
@@ -151,7 +207,7 @@ function Player(x, y, w, h, sprite) {
 		this.vspd += this.gravity;
 
 		// Jump
-		if (jump_key == 1) {
+		if (jump_key == 1 && this.rope == false) {
 			this.vspd -= this.jumpHeight;
 			canDig = 0;
 			setTimeout(function() {
@@ -160,10 +216,88 @@ function Player(x, y, w, h, sprite) {
 			}, 50);
 		}
 
+		// If player has rope and mouse button is clicked, start climbing only if the tile is near enough
+		if (this.rope == true) {
+			if (mouseButton == 1 && onTile.x - onTile.w < this.x && onTile.x + (onTile.w * 2) > this.x + this.w) {
+				goRope = true;
+			}
+
+			if (goRope == true) {
+				// Create a rope and ascend
+				c.beginPath();
+				c.moveTo((this.x + this.w) - (this.w / 2), (this.y + this.h) - (this.h / 2));
+				c.strokeStyle = "#af4a00";
+
+				// Ascending code
+				if (onTile.y < this.y + this.h + 10) {
+					this.hspd = 0;
+					this.vspd = -2; // ascend speed
+
+					if (onTile.x > this.x) {
+						if (move == -1) {
+							move = 0;
+						}
+
+						// Check for player x
+						if (this.x + this.w > onTile.x) {
+							goRope = false;
+							this.rope = false;
+						} else {
+							if (this.playerTopTile.length > 0) {
+							var tt = this.playerTopTile[this.playerTopTile.length - 1];
+
+							// Bottom Tile
+							c.lineTo((tt.x + tt.w), tt.y + tt.h);
+							} else {
+								// Right
+								c.lineTo(onTile.x - 5, onTile.y - 10);
+								c.moveTo(onTile.x - 5, onTile.y - 10);
+								c.lineTo(onTile.x, onTile.y);
+							}
+						}
+					} else if (onTile.x < this.x) {
+						if (move == 1) {
+							move = 0;
+						}
+
+						if (this.x < onTile.x + onTile.w) {
+							goRope = false;
+							this.rope = false;
+						} else {
+							if (this.playerTopTile.length > 0) {
+								var tt = this.playerTopTile[this.playerTopTile.length - 1];
+
+								// Bottom Tile
+								c.lineTo(tt.x, tt.y + tt.h);
+							} else {
+								// Left
+								c.lineTo((onTile.x + onTile.w) + 5, onTile.y - 10);
+								c.moveTo((onTile.x + onTile.w) + 5, onTile.y - 10);
+								c.lineTo(onTile.x + onTile.w, onTile.y);
+							}
+						}
+					}
+				} else {
+					goRope = false;
+					this.rope = false;
+				}
+
+				// Reset goRope and rope var once player is above the tile to be climbed on
+				if (this.y + this.h < onTile.y) {
+					goRope = false;
+					this.rope = false;
+				}
+
+				c.stroke();
+				c.closePath();
+			}
+		}
+
 		// Vertical collision
 		for (var i = 0; i < tiles.length; i++) {
 			for (var p = 0; p < tiles[i].length; p++) {
 				if (this.x < (tiles[i][p].x + tiles[i][p].w) && (this.x + this.w) > tiles[i][p].x && this.y < (tiles[i][p].y + tiles[i][p].h) && (this.y + this.h + this.vspd) > tiles[i][p].y) {
+					// Bottom collision
 					if (this.h + this.y < tiles[i][p].y) {
 						this.y += (tiles[i][p].y - (this.h + this.y));
 					}
@@ -171,16 +305,19 @@ function Player(x, y, w, h, sprite) {
 					canJump = 1;
 					canDig = 1;
 				} else if (this.x < (tiles[i][p].x + tiles[i][p].w) && (this.x + this.w) > tiles[i][p].x && (this.y + this.vspd) < (tiles[i][p].y + tiles[i][p].h) && (this.y + this.h) > tiles[i][p].y) {
+					// Top collision
 					if (this.y < tiles[i][p].y + tiles[i][p].h) {
 						this.y -= (this.y - (tiles[i][p].y + tiles[i][p].h));
 					}
+					this.rope = false;
+					goRope = false;
 					this.vspd = 0;
 				}
 			}			
-		}
+		};
 
 		// Gravity effect
-		this.y += this.vspd;
+		this.y += this.vspd;	
 
 		// Move player
 		this.hspd = player_obj.speed * move;
@@ -205,7 +342,6 @@ function Player(x, y, w, h, sprite) {
 			}
 			this.x += this.hspd;
 
-
 			// Handle animation
 			if (move > 0 && this.hspd != 0) {
 				// moving to right
@@ -228,7 +364,7 @@ function Player(x, y, w, h, sprite) {
 				}		
 			}
 				// Dig the diggable land
-				if (diggable.length > 0) {
+				if (diggable.length > 0 && this.rope == false) {
 					for (var i = 0; i < diggable.length; i++) {
 						if (dig_click == 1) {
 							if (mouse.x > (diggable[i].x) && mouse.x < (diggable[i].x + diggable[i].w) && mouse.y > (diggable[i].y) && mouse.y < (diggable[i].y + diggable[i].h)) {
@@ -307,7 +443,6 @@ function Player(x, y, w, h, sprite) {
 					}		 
 				}
 			}, player_obj.digTime);
-			
 
 			// Update resources
 			document.querySelector('.resources.gold .amount').innerHTML = this.gold;

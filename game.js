@@ -8,7 +8,7 @@ document.body.appendChild(canvas);
 var canvasPos = canvas.getBoundingClientRect();
 // ----------------------------------- GAME CODE --------------------------------------------
 // Init global vars
-var onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug, bunchOfFood = [],
+var gridHi = 'white', onTile, frames = 0, player, tiles = [], gridShow = false, move = 0, canJump = 0, jump_key = 0, canDig = 0, dig_click = 0, bug, bunchOfFood = [],
 	keyCode, inventory_open = false, itemArray = [], foodArray, enemyArr = [], uid = 0, mouseButton, craft_open = false, groundSpriteArr = [];
 
 // Update mouse position on canvas
@@ -172,6 +172,9 @@ function draw() {
 	for (var i = 0; i < tiles.length; i++) {
 		for (var p = 0; p < tiles[i].length; p++) {
 			tiles[i][p].draw();
+			if (mouseButton == 1) {
+				tiles[i][p].getTile(mouse.x, mouse.y);
+			}
 		}	
 	}
 
@@ -232,10 +235,14 @@ function draw() {
 	// Check items regularly
 	checkItems();
 
+	// Restart game if player is dead
 	if (player.health <= 0) {
 		window.location.reload();
 		return;
 	}
+
+	// Reset keyCode
+	keyCode = undefined;
 }
 
 function update() {

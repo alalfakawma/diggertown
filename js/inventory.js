@@ -51,6 +51,8 @@ for (var z = 0; z < getInvo.length; z++) {
 						document.querySelector('#inventoryInfo .inInfo').innerHTML = current.info;
 						if (current.obj.dmg != undefined && current.obj.dmg != null) {
 							document.querySelector('#inventoryInfo .dmg').innerHTML = 'Damage: ' + current.obj.dmg[0] + ' - ' + current.obj.dmg[1];
+						} else if (current.obj.armor != undefined && current.obj.armor != null) {
+							document.querySelector('#inventoryInfo .armor').innerHTML = 'Armor: ' + current.obj.armor;
 						}
 						document.querySelector('#inventoryInfo').style.left = (domMouse.x + 10) + 'px';
 						document.querySelector('#inventoryInfo').style.top = (domMouse.y + 10) + 'px';
@@ -141,6 +143,23 @@ for (var z = 0; z < getInvo.length; z++) {
 						}
 					}
 					break;
+				} else if (getObject.type == 'uitem') {
+					// .. if usable item
+					// For rope item
+					if (getObject.id == 12) {
+						player.rope = true;
+					}
+
+					// Remove item from inventory
+					for (var s = 0; s < playerInvo.length; s++) {
+						if (getObject.uid == playerInvo[s].uid) {
+							removeFromInvo(playerInvo[s]);
+							break;
+						}
+					}
+
+					// Close inventory after use
+					inventory_open = false;
 				}
 			}
 		}

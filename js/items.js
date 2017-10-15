@@ -68,6 +68,7 @@ function Item(x, y, w, h, object) {
 					}
 					this.vspd = 0;
 					this.fallen = true;
+
 					for (var l = 0; l < gameWorld.tileArr.length; l++) {
 						for (var k = 0; k < gameWorld.tileArr[l].length; k++) {
 							var thatX = gameWorld.tileArr[l][k].x;
@@ -77,16 +78,16 @@ function Item(x, y, w, h, object) {
 
 							if (this.x < (thatX + thatW) && (this.x + this.w) > thatX && this.y < (thatY + thatH) && (this.y + this.h) > thatY) {
 								if (this.fallen == true) {
-								this.x = thatX + ((thatW/2) - this.w/2);
+									this.x = thatX + ((thatW/2) - this.w/2);
 
-								// Float in space
-								this.y = (thatY + ((thatH/2) - this.h/2)) + Math.sin((frames+this.random*1) * Math.PI / 180) * 3;
+									// Float in space
+									this.y = (thatY + ((thatH/2) - this.h/2)) + Math.sin((frames+this.random*1) * Math.PI / 180) * 3;
 								}
 							}
 						}		
 					}
 				}
-			}			
+			}		
 		}
 
 		// Check for collisions with player
@@ -141,6 +142,16 @@ for (var i = 0; i < itemStack.length; i++) {
 						document.querySelector('.itemInfo').style.display = "block";
 						document.querySelector('.itemInfo .inTitle').innerHTML = current.name;
 						document.querySelector('.itemInfo .inInfo').innerHTML = current.info;
+						if (current.dmg != undefined && current.dmg != null) {
+							document.querySelector('.itemInfo .dmg').innerHTML = 'Damage: ' + current.dmg[0] + ' - ' + current.dmg[1];
+						} else {
+							document.querySelector('.itemInfo .dmg').innerHTML = '';
+						}
+						if (current.armor != undefined && current.armor != null) {
+							document.querySelector('.itemInfo .armor').innerHTML = 'Armor: ' + current.armor;
+						} else {
+							document.querySelector('.itemInfo .armor').innerHTML = '';
+						}
 						document.querySelector('.itemInfo').style.left = (domMouse.x + 10) + 'px';
 						document.querySelector('.itemInfo').style.top = (domMouse.y - 50) + 'px';
 					}, 1);

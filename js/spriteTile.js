@@ -44,18 +44,18 @@ function DrawSpriteObj(x, y, spriteArray, spriteW, spriteH) {
 	// update resource acc to sprite
 	if (this.sprite.src.includes('gold')) {
 		this.resource = 'Gold';
-		this.amount = Math.ceil(Math.random() * 4);
+		this.amount = Math.ceil(Math.random() * 36);
 	} else if (this.sprite.src.includes('silver')) {
 		this.resource = 'Silver';
-		this.amount = Math.ceil(Math.random() * 8);
+		this.amount = Math.ceil(Math.random() * 56);
 	} else if (this.sprite.src.includes('diamond')) {
 		this.resource = 'Diamond';
-		this.amount = Math.ceil(Math.random() * 2);
+		this.amount = Math.ceil(Math.random() * 22);
 	} else if (this.sprite.src.includes('bombs')) {
 		this.resource = 'Bombs';
 	} else if (this.sprite.src.includes('copper')) {
 		this.resource = 'Copper'
-		this.amount = Math.ceil(Math.random() * 22);
+		this.amount = Math.ceil(Math.random() * 86);
 	} else {
 		this.resource = '';
 	}
@@ -84,7 +84,7 @@ function DrawSpriteObj(x, y, spriteArray, spriteW, spriteH) {
 	// Get specific tile
 	this.getTile = function(x, y) {
 		if (x > (this.x) && x < (this.x + this.w) && y > (this.y) && y < (this.y + this.h)) {
-			return this;
+			onTile = this;
 		}
 	}
 

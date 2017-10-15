@@ -51,8 +51,6 @@ function randomDec(min, max) {
 
 // Run to goto new randomly generated level
 function nextLevel() {
-  player.x = randomIntFromInterval(20, 180);
-  player.y = 0;
   tiles = [];
 
   for (var i = 0; i < gameWorld.tileArr.length; i++) {
@@ -62,4 +60,7 @@ function nextLevel() {
       tiles[i].push(new DrawSpriteObj(gameWorld.tileArr[i][p].x, gameWorld.tileArr[i][p].y, groundSpriteArr, 32, 32))
     }
   }
+
+  player.x = randomIntFromInterval(20, 180);
+  player.y = 0;
 }

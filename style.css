@@ -129,7 +129,8 @@ span.bar {
 	width: 100px;
 	height: 20px;
 	display: block;
-	background: red;
+	background: url('sprites/player_head.png');
+	background-size: 20px;
 }
 
 .resourceTitle {
@@ -223,6 +224,10 @@ span.bar {
 	font-size: 10px;
 }
 
+.armor {
+	font-size: 10px;
+}
+
 #inventoryInfo .inClick {
 	text-align: center;
 	font-size: 8px;
@@ -299,6 +304,10 @@ span.bar {
 	position: absolute;
 	right: 20%;
 	top: 1%;
+}
+
+.tutorial > .line {
+	font-size: 86%;
 }
 
 .hard {

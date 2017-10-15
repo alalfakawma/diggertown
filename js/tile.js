@@ -42,18 +42,43 @@ function CreateTile(x, y, w, h, color, col, row) {
 		this.obstacle = false;
 	}
 
-	// Get specific tile
-	this.getTile = function(x, y) {
-		if (x > (this.x + 1) && x < (this.x + this.w) && y > (this.y + 1) && y < (this.y + this.h)) {
-			onTile = this;
-		}
-	}
-
 	this.highlight = function(x, y) {
 		if ((x + 1) > this.x && x < (this.x + this.w) && y > (this.y + 1) && y < (this.y + this.h)) {
-			c.strokeStyle = "white";
+			c.strokeStyle = gridHi;
 			c.strokeRect(this.x, this.y, this.w, this.h);
 			c.strokeRect(this.x, this.y, this.w, this.h);
+
+			// Create aim when player is aiming for rope
+			if (gridHi != 'white') {
+				// left
+				c.beginPath();
+				c.strokeStyle = gridHi;
+				c.moveTo(this.x, this.y);
+				c.lineTo(this.x + 10, this.y + 10);
+				c.stroke();
+				c.closePath();
+
+				// right
+				c.beginPath();
+				c.moveTo(this.x + this.w, this.y);
+				c.lineTo(this.x + this.w - 10, this.y + 10);
+				c.stroke();
+				c.closePath();
+
+				// bottom right
+				c.beginPath();
+				c.moveTo(this.x + this.w, this.y + this.h);
+				c.lineTo(this.x + this.w - 10, this.y + this.h - 10);
+				c.stroke();
+				c.closePath();
+
+				// bottom left
+				c.beginPath();
+				c.moveTo(this.x, this.y + this.h);
+				c.lineTo(this.x + 10, this.y + this.h - 10);
+				c.stroke();
+				c.closePath();
+			}
 
 			// SHOW TILE INFO
 			for (var i = 0; i < tiles.length; i++) {

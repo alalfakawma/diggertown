@@ -73,6 +73,11 @@ for (var z = 0; z < getGrids.length; z++) {
 			} else {
 				document.querySelector('.craftInfo .dmg').innerHTML = '';
 			}
+			if (current.armor != undefined && current.armor != null) {
+				document.querySelector('.craftInfo .armor').innerHTML = 'Armor: ' + current.armor;
+			} else {
+				document.querySelector('.craftInfo .armor').innerHTML = '';
+			}
 			document.querySelector('.craftInfo .inInfo').innerHTML = current.info;
 			document.querySelector('.craftInfo').style.left = (domMouse.x + 10) + 'px';
 			document.querySelector('.craftInfo').style.top = (domMouse.y + 10) + 'px';
